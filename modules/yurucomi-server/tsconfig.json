@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["./node_modules/@types/*", "../../typings"]
+    },
+    "typeRoots": ["./node_modules/@types", "../../typings"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
