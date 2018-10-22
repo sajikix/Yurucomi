@@ -2,7 +2,7 @@ import { MongoClient, Db, Collection } from "mongodb";
 import _debug from "debug";
 
 const debug = _debug("server:mongo");
-const url: string = process.env.MONGODB_URI || "mongodb://localhost/linda";
+const url: string = process.env.MONGODB_URI || "mongodb://localhost/yurucomi";
 let db: Db;
 
 MongoClient.connect(

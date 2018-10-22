@@ -1,10 +1,11 @@
 import express from "express";
-import _debug from "debug";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { createServer, Server } from "http";
 import socketIO from "socket.io";
+import routeIndex from "./routes";
+import _debug from "debug";
 
 const debug = _debug("server:main");
 dotenv.load();
@@ -12,8 +13,8 @@ dotenv.load();
 const main = async () => {
   const PORT: number = Number(process.env.PORT) || 3000;
   const app = express();
-  const server: Server = createServer(app);
-  const io: SocketIO.Server = socketIO.listen(server);
+  const server = createServer(app);
+  const io = socketIO.listen(server);
   app.set("views", "views/");
   app.set("view engine", "pug");
   app.use(express.static("public/"));
@@ -25,6 +26,7 @@ const main = async () => {
   );
   app.use(cors());
   app.use(express.static("public"));
+  app.use("/", routeIndex);
 
   server.listen(PORT, async () => {
     debug(`Yurucomi server listen on :${PORT}`);
