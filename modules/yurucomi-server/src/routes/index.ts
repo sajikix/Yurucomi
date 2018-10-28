@@ -3,7 +3,6 @@ const router: express.Router = express.Router();
 import iginitionCheck from "../ignitionCheck";
 import { Tuple } from "yurucomi-interfaces";
 import _debug from "debug";
-import app from "../index";
 import emitter from "../eventEmitter";
 
 const debug = _debug("server:router");

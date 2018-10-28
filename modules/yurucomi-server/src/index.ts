@@ -7,14 +7,14 @@ import socketIO from "socket.io";
 import routeIndex from "./routes";
 import _debug from "debug";
 import socketManager from "./socketManager";
+import session from "express-session";
 
 const debug = _debug("server:main");
 dotenv.load();
 
-const app = express();
-
 const main = async () => {
   const PORT: number = Number(process.env.PORT) || 3000;
+  const app = express();
   const server = createServer(app);
   const io = socketIO.listen(server);
   app.set("views", "views/");
@@ -28,9 +28,18 @@ const main = async () => {
   );
   app.use(cors());
   app.use(express.static("public"));
+  app.use(
+    session({
+      secret: "keyboard cat",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 30 * 60 * 1000,
+      },
+    })
+  );
   app.use("/", routeIndex);
 
-  //app.set("io", io);
   socketManager(io);
 
   server.listen(PORT, async () => {
@@ -43,5 +52,3 @@ main().catch(e => {
   debug(`error:${e}`);
   process.exit(1);
 });
-
-export default app;
