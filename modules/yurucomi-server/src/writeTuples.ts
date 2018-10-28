@@ -10,7 +10,7 @@ const writeTuples = async (
 ) => {
   const collection = _collection(tupleSpaceName);
   await collection.insertMany(tupleArray, mes => {
-    debug(`inserted data:${JSON.stringify(mes)}`);
+    debug(`inserted:${JSON.stringify(tupleArray)}`);
   });
 };
 

@@ -2,7 +2,7 @@ import _collection from "./mongodb";
 import { Tuple } from "yurucomi-interfaces";
 import writeTuples from "./writeTuples";
 import _debug from "debug";
-import { json } from "express";
+import emitter from "./eventEmitter";
 
 const debug = _debug("server:ignitionCheck");
 
@@ -22,10 +22,6 @@ const ignitionCheck = async (tupleSpaceName: string, tuple: Tuple) => {
       },
     ],
   });
-  searchedResult.count().then(mes => {
-    debug(`searchResult:${mes}`);
-  });
-
   let additionalTupleArray: Array<Tuple> = [];
   let persons: Array<string> = [];
   if (searchedResult !== null) {
@@ -34,7 +30,6 @@ const ignitionCheck = async (tupleSpaceName: string, tuple: Tuple) => {
       personData.push(doc._from);
     });
     persons = [...new Set(personData)];
-    debug(`${persons.length} persons matched`);
     if (persons.length > 0) {
       additionalTupleArray.push({
         _from: "event",
@@ -42,6 +37,11 @@ const ignitionCheck = async (tupleSpaceName: string, tuple: Tuple) => {
         _time: Date.now(),
         _with: [originalTuple._from, ...persons],
         _which: originalTuple,
+      });
+      await emitter.emit("event", {
+        tupleSpace: tupleSpaceName,
+        to: [originalTuple._from, ...persons],
+        tuple: originalTuple,
       });
     }
     for (const person of persons) {
@@ -55,9 +55,9 @@ const ignitionCheck = async (tupleSpaceName: string, tuple: Tuple) => {
     }
   }
   await writeTuples(tupleSpaceName, [originalTuple, ...additionalTupleArray]);
-  debug(
-    `new tuple:${JSON.stringify([originalTuple, ...additionalTupleArray])}`
-  );
+  persons.length > 0
+    ? debug(`This tuple matched with ${[...persons]}`)
+    : debug("No tuple matched with this Tuple");
 };
 
 export default ignitionCheck;

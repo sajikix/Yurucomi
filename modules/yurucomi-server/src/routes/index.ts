@@ -3,6 +3,8 @@ const router: express.Router = express.Router();
 import iginitionCheck from "../ignitionCheck";
 import { Tuple } from "yurucomi-interfaces";
 import _debug from "debug";
+import app from "../index";
+import emitter from "../eventEmitter";
 
 const debug = _debug("server:router");
 
@@ -16,14 +18,14 @@ router.get(
       case "write":
         // FIXME:本来_fromをここで計算
         const writeTuple = { ...req.query, _time: Date.now(), _from: "saji" };
-        debug(`write request tuple:${JSON.stringify(writeTuple)}`);
+        debug(`write:${JSON.stringify(writeTuple)}`);
         await iginitionCheck(req.params.tupleSpaceName, writeTuple);
         await res.send("writed!");
         break;
       case "write2":
         // FIXME:本来_fromをここで計算
-        const writeTuple2 = { ...req.query, _time: Date.now(), _from: "huga" };
-        debug(`write request tuple:${JSON.stringify(writeTuple2)}`);
+        const writeTuple2 = { ...req.query, _time: Date.now(), _from: "hoge" };
+        debug(`write:${JSON.stringify(writeTuple2)}`);
         await iginitionCheck(req.params.tupleSpaceName, writeTuple2);
         await res.send("writed!");
         break;
@@ -52,6 +54,7 @@ router.post(
     const writeTuple: Tuple = {
       ...req.query,
       _time: Date.now(),
+      _from: "hoge",
     };
     await iginitionCheck(req.params.tupleSpaceName, writeTuple);
     await debug(`write tuple:${writeTuple}`);
