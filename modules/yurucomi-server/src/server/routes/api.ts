@@ -3,7 +3,6 @@ const router: express.Router = express.Router();
 import iginitionCheck from "../ignitionCheck";
 import { Tuple } from "yurucomi-interfaces";
 import _debug from "debug";
-import emitter from "../eventEmitter";
 
 const debug = _debug("server:router");
 
@@ -15,14 +14,14 @@ router.get(
         debug("read operation is WIP");
         break;
       case "write":
-        // FIXME:本来_fromをここで計算
+        // FIXME:本来_fromをここで計算/sessionから
         const writeTuple = { ...req.query, _time: Date.now(), _from: "saji" };
         debug(`write:${JSON.stringify(writeTuple)}`);
         await iginitionCheck(req.params.tupleSpaceName, writeTuple);
         await res.send("writed!");
         break;
       case "write2":
-        // FIXME:本来_fromをここで計算
+        // FIXME:本来_fromをここで計算/sessionから
         const writeTuple2 = { ...req.query, _time: Date.now(), _from: "hoge" };
         debug(`write:${JSON.stringify(writeTuple2)}`);
         await iginitionCheck(req.params.tupleSpaceName, writeTuple2);
@@ -32,17 +31,6 @@ router.get(
         res.send('There is no operation like "' + req.params.operation + '"');
         break;
     }
-  }
-);
-
-router.get("/", (req: express.Request, res: express.Response) => {
-  res.send("index");
-});
-
-router.get(
-  "/:tupleSpaceName",
-  (req: express.Request, res: express.Response) => {
-    res.send(`Here is ${req.params.tupleSpaceName}`);
   }
 );
 

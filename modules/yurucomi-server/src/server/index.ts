@@ -4,8 +4,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { createServer, Server } from "http";
 import socketIO from "socket.io";
-import routeIndex from "./routes";
+import { routeMain, routeApi, routeLogin, routeSessionCheck } from "./routes";
 import _debug from "debug";
+//import sessionCheck from "./sessionCheck";
 import socketManager from "./socketManager";
 import session from "express-session";
 
@@ -38,7 +39,10 @@ const main = async () => {
       },
     })
   );
-  app.use("/", routeIndex);
+  app.use("/_api", routeApi);
+  app.use("/_login", routeLogin);
+  app.use("/_sessioncheck", routeSessionCheck);
+  app.use("/", routeMain);
 
   socketManager(io);
 
