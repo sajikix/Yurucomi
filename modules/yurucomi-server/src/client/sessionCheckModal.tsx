@@ -93,7 +93,7 @@ export default class sessionCheckModal extends React.Component<Props, State> {
         {this.state.hasError && (
           <p style={{ color: "red" }}>{this.state.errorMes}</p>
         )}
-        <button onClick={this.login} />
+        <button onClick={this.login} value={"login"} />
       </div>
     );
   }

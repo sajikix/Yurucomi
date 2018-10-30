@@ -5,13 +5,8 @@ const debug = _debug("server:router/login");
 
 router.post("/", (req: express.Request, res: express.Response) => {
   if (req.body.userName) {
-    // req.session = Object.assign(
-    //   { user: { name: req.body.userName } },
-    //   req.session
-    // );
     if (req.session) {
       req.session.userName = req.body.userName;
-      debug(JSON.stringify(req.session));
       debug("login success");
       res.json({ result: true, name: req.body.userName });
     } else {

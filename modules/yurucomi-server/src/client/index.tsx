@@ -4,9 +4,9 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 import Home from "./home";
 import Main from "./Main";
 
-type Props = {};
+//type Props = {};
 
-const Root = (props: Props) => (
+const Root = () => (
   <BrowserRouter>
     <div>
       <Route exact path="/" component={Home} />

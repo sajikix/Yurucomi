@@ -33,6 +33,7 @@
     "@types/react-dom": "^16.0.9",
     "@types/react-router-dom": "^4.3.1",
     "@types/socket.io": "^1.4.38",
+    "@types/socket.io-client": "^1.4.32",
     "awesome-typescript-loader": "^5.2.1",
     "lerna": "^2.11.0",
     "nodemon": "^1.18.4",
@@ -56,6 +57,7 @@
     "react-dom": "^16.6.0",
     "react-router-dom": "^4.3.1",
     "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "yurucomi-interfaces": "^0.0.1"
   }
 }
