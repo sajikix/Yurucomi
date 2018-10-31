@@ -19,7 +19,9 @@ const socketManager = (io: SocketIO.Server) => {
     socket.on("join-tuple-space", data => {
       socket.join(data.tupleSpace);
     });
-    socket.on("disconnect", () => {});
+    socket.on("disconnect", (reason: any) => {
+      console.log(reason);
+    });
   });
 };
 

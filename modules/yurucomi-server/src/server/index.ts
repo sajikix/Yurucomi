@@ -17,7 +17,15 @@ const main = async () => {
   const PORT: number = Number(process.env.PORT) || 3000;
   const app = express();
   const server = createServer(app);
-  const io = socketIO.listen(server);
+  //const io = socketIO.listen(server);
+  const options = {
+    cookie: false,
+    serveClient: false,
+    transports: ["websocket"],
+    pingTimeout: 15000,
+    pingInterval: 13000,
+  }; // default: 60000 // default: 25000
+  const io = socketIO(server, options);
   app.set("views", "views/");
   app.set("view engine", "pug");
   app.use(express.static("public/"));
