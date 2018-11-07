@@ -2,10 +2,11 @@ import React from "react";
 import socket from "./socket";
 import SessionCheckModal from "./sessionCheckModal";
 import { RouteComponentProps } from "react-router-dom";
+import LindaClient from "./lindaClient";
 type Props = RouteComponentProps<{ groupName: string }>;
 
 type State = {
-  eventList: Array<EventInfo>;
+  eventList: any;
   reconnecting: boolean;
 };
 
@@ -13,13 +14,6 @@ type EventInfo = {
   with: Array<string>;
   tuple: any;
 };
-
-// import io from "socket.io-client";
-
-// const options = {
-//   reconnectionDelay: 5000,
-//   transports: ["websocket"],
-// };
 
 export default class Main extends React.Component<Props, State> {
   // socket: SocketIOClient.Socket;
@@ -39,16 +33,23 @@ export default class Main extends React.Component<Props, State> {
 
   connect() {
     //const socket = io(location.origin, options);
-    socket.emit("join-tuple-space", {
-      tupleSpace: this.props.match.params.groupName,
-    });
+    // socket.emit("join-tuple-space", {
+    //   tupleSpace: this.props.match.params.groupName,
+    // });
 
-    socket.on("msg", (data: any) => {
-      const newEventList: Array<EventInfo> = [
-        { with: data.to, tuple: data.tuple },
-        ...this.state.eventList,
-      ];
-      this.setState({ eventList: newEventList });
+    // socket.on("msg", (data: any) => {
+    //   const newEventList: Array<EventInfo> = [
+    //     { with: data.to, tuple: data.tuple },
+    //     ...this.state.eventList,
+    //   ];
+    //   this.setState({ eventList: newEventList });
+    // });
+    const lindaClient = new LindaClient(this.props.match.params.groupName);
+    lindaClient.connect(socket => {
+      lindaClient.watch({}, socket, data => {
+        const newEventList = [data, ...this.state.eventList];
+        this.setState({ eventList: newEventList });
+      });
     });
   }
 
@@ -64,7 +65,7 @@ export default class Main extends React.Component<Props, State> {
             {this.props.match.params.groupName + "/" + JSON.stringify(userName)}
             <div>
               {this.state.eventList.map(value => {
-                return <ul>{JSON.stringify(value.with)}</ul>;
+                return <ul>{JSON.stringify(value)}</ul>;
               })}
             </div>
           </div>

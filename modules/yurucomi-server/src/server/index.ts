@@ -9,6 +9,7 @@ import _debug from "debug";
 //import sessionCheck from "./sessionCheck";
 import socketManager from "./socketManager";
 import session from "express-session";
+import Linda from "./linda";
 
 const debug = _debug("server:main");
 dotenv.load();
@@ -26,6 +27,8 @@ const main = async () => {
     pingInterval: 13000,
   }; // default: 60000 // default: 25000
   const io = socketIO(server, options);
+  const linda = new Linda(io);
+  linda.listen();
   app.set("views", "views/");
   app.set("view engine", "pug");
   app.use(express.static("public/"));
@@ -51,8 +54,6 @@ const main = async () => {
   app.use("/_login", routeLogin);
   app.use("/_sessioncheck", routeSessionCheck);
   app.use("/", routeMain);
-
-  socketManager(io);
 
   server.listen(PORT, async () => {
     debug(`Yurucomi server listen on :${PORT}`);
