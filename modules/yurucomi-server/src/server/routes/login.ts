@@ -19,4 +19,11 @@ router.post("/", (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get("/:tsName", (req: express.Request, res: express.Response) => {
+  res.render("index");
+});
+router.get("/", (req: express.Request, res: express.Response) => {
+  res.render("index");
+});
+
 export default router;

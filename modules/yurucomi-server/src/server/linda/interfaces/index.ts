@@ -18,6 +18,7 @@ export type InsertData = {
   _from: string;
   _payload: Object;
   _id?: number;
+  _where: string;
 };
 
 //FIXME: MemoryClientの時の型
@@ -30,16 +31,16 @@ export type SavedData = {
 
 export type ResponseTuple = {
   _isMuched: boolean;
-  _time: number;
+  _time: number | null;
   _from: string;
-  _id: number;
-  _payload: Object;
+  _id: number | null;
+  _payload: Object | null;
 };
 
 export type WatchResponseTuple = {
   _time: number;
   _from: string;
-  _payload: Object;
+  _payload: Tuple | null;
 };
 
 export type IsMuchResponse = {

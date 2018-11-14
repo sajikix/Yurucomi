@@ -2,33 +2,39 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { createServer, Server } from "http";
 import socketIO from "socket.io";
 import { routeMain, routeApi, routeLogin, routeSessionCheck } from "./routes";
 import _debug from "debug";
-//import sessionCheck from "./sessionCheck";
-import socketManager from "./socketManager";
+import sessionCheck from "./sessionCheck";
+import emitter from "./eventEmitter";
 import session from "express-session";
 import Linda from "./linda";
+import settingListener from "./settingListener";
 
 const debug = _debug("server:main");
 dotenv.load();
 
+const PORT: number = Number(process.env.PORT) || 3000;
+const sessionMiddleware = session({
+  secret: "keyboard cat",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 60 * 1000,
+  },
+});
+const app = express();
+
 const main = async () => {
-  const PORT: number = Number(process.env.PORT) || 3000;
-  const app = express();
   const server = createServer(app);
-  //const io = socketIO.listen(server);
   const options = {
     cookie: false,
     serveClient: false,
-    transports: ["websocket"],
     pingTimeout: 15000,
     pingInterval: 13000,
-  }; // default: 60000 // default: 25000
-  const io = socketIO(server, options);
-  const linda = new Linda(io);
-  linda.listen();
+  };
   app.set("views", "views/");
   app.set("view engine", "pug");
   app.use(express.static("public/"));
@@ -38,22 +44,27 @@ const main = async () => {
       extended: true,
     })
   );
+  app.use(cookieParser());
+
   app.use(cors());
   app.use(express.static("public"));
-  app.use(
-    session({
-      secret: "keyboard cat",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 30 * 60 * 1000,
-      },
-    })
-  );
+  app.use(sessionMiddleware);
+
   app.use("/_api", routeApi);
   app.use("/_login", routeLogin);
   app.use("/_sessioncheck", routeSessionCheck);
-  app.use("/", routeMain);
+  app.use("/", sessionCheck, routeMain);
+
+  const io = socketIO(server, options);
+  io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
+  });
+  const linda = new Linda(io);
+  linda.listen();
+  settingListener(io);
+
+  app.set("linda", linda);
+  app.set("io", io);
 
   server.listen(PORT, async () => {
     debug(`Yurucomi server listen on :${PORT}`);
@@ -65,3 +76,5 @@ main().catch(e => {
   debug(`error:${e}`);
   process.exit(1);
 });
+
+export default app;

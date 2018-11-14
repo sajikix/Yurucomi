@@ -8,6 +8,8 @@ import {
   LindaSubscribeOperation,
   InsertData,
 } from "./interfaces";
+import _debug from "debug";
+const debug = _debug("server:linda");
 
 export default class Linda {
   tupleSpaces: { [key: string]: tupleSpace };
@@ -23,8 +25,8 @@ export default class Linda {
     return this.tupleSpaces[tupleSpaceName];
   }
   listen() {
-    console.log("linda-listening");
     this.io.on("connection", (socket: SocketIO.Socket) => {
+      debug("linda listenning");
       socket.on("_read_operation", (data: LindaOperation) => {
         this.tupleSpace(data.tsName).read(
           data.payload,

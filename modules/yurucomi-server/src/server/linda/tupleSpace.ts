@@ -54,7 +54,8 @@ export default class tupleSpace {
   }
 
   async take(takeTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
-    let resData: ResponseTuple = await this.storage.get(takeTuple);
+    //FIXME:その場しのぎのany
+    let resData: any = await this.storage.get(takeTuple);
     if (resData._isMuched) {
       await this.storage.delete(resData._id);
     }
