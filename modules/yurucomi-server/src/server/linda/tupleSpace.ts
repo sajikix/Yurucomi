@@ -6,8 +6,10 @@ import {
   WriteCallback,
   ReadTakeCallback,
   InsertOneWriteOpResult,
+  InsertOperation,
   WatchResponseTuple,
   InsertData,
+  LindaOperation,
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 import storageClient from "./dbclient/memoryClient";
@@ -28,20 +30,48 @@ export default class tupleSpace {
     this.storage = new storageClient(tupleSpaceName);
   }
 
-  async write(writeTuple: Tuple, callback: WriteCallback): Promise<void> {
-    const resData: InsertData = await this.storage.insert(writeTuple);
-    this.emitter.emit("_writeData", writeTuple);
+  async read(
+    readOperationData: LindaOperation,
+    callback: ReadTakeCallback
+  ): Promise<void> {
+    let resData: ResponseTuple = await this.storage.get(
+      readOperationData.payload
+    );
+    callback(resData);
+  }
+
+  async write(
+    writeOperationData: LindaOperation,
+    callback: WriteCallback
+  ): Promise<void> {
+    let insertData: InsertOperation;
+    if (writeOperationData.from) {
+      insertData = {
+        payload: writeOperationData.payload,
+        from: writeOperationData.from,
+      };
+    } else {
+      if (writeOperationData.payload.hasOwnProperty("_from")) {
+        const from: string = String(writeOperationData.payload._from);
+        const payload = writeOperationData.payload;
+        delete payload._from;
+        insertData = { payload: payload, from: from };
+      } else {
+        insertData = { payload: writeOperationData.payload, from: "" };
+      }
+    }
+    const resData: InsertData = await this.storage.insert(insertData);
+    this.emitter.emit("_writeData", writeOperationData);
 
     callback(resData);
   }
-  async read(searchTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
-    let resData: ResponseTuple = await this.storage.get(searchTuple);
-    callback(resData);
-  }
 
-  watch(watchTuple: Tuple, callback: WatchCallback): void {
-    this.emitter.on("_writeData", (resTuple: Tuple) => {
-      let result: IsMuchResponse = this.storage.isMuch(resTuple, watchTuple);
+  watch(watchOperationData: LindaOperation, callback: WatchCallback): void {
+    this.emitter.on("_writeData", (resTuple: LindaOperation) => {
+      let result: IsMuchResponse = this.storage.isMuch(
+        resTuple.payload,
+        watchOperationData.payload
+      );
       if (result.isMuched) {
         const resData: WatchResponseTuple = {
           _time: Date.now(),
@@ -53,9 +83,12 @@ export default class tupleSpace {
     });
   }
 
-  async take(takeTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
+  async take(
+    takeOperationData: LindaOperation,
+    callback: ReadTakeCallback
+  ): Promise<void> {
     //FIXME:その場しのぎのany
-    let resData: any = await this.storage.get(takeTuple);
+    let resData: any = await this.storage.get(takeOperationData.payload);
     if (resData._isMuched) {
       await this.storage.delete(resData._id);
     }

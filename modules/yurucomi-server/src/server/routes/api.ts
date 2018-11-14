@@ -1,10 +1,14 @@
 import express from "express";
 const router: express.Router = express.Router();
-import iginitionCheck from "../ignitionCheck";
 import { Tuple } from "yurucomi-interfaces";
-import { InsertOneWriteOpResult, ResponseTuple } from "../linda/interfaces";
+import {
+  InsertOneWriteOpResult,
+  ResponseTuple,
+  LindaOperation,
+} from "../linda/interfaces";
 import _debug from "debug";
 import app from "../index";
+import Linda from "../../server/linda";
 
 //debug用
 import mdb from "../linda/db/memoryDB";
@@ -15,7 +19,7 @@ const debug = _debug("server:router");
 router.get(
   "/:tupleSpaceName/:operation",
   async (req: express.Request, res: express.Response) => {
-    const linda = app.get("linda");
+    const linda: Linda = app.get("linda");
     const ts = linda.tupleSpace(req.params.tupleSpaceName);
     switch (req.params.operation) {
       case "read":
@@ -29,9 +33,12 @@ router.get(
         // const writeTuple = { ...req.query, _time: Date.now(), _from: "saji" };
         // debug(`write:${JSON.stringify(writeTuple)}`);
         // await iginitionCheck(req.params.tupleSpaceName, writeTuple);
-        ts.write(req.query, (Data: InsertOneWriteOpResult) => {
-          res.send(Data);
-        });
+        ts.write(
+          { payload: req.query, tsName: req.params.tupleSpaceName },
+          Data => {
+            res.send(Data);
+          }
+        );
         break;
       case "db":
         res.send(mdb[req.params.tupleSpaceName]);
@@ -55,7 +62,6 @@ router.post(
       _time: Date.now(),
       _from: "hoge",
     };
-    await iginitionCheck(req.params.tupleSpaceName, writeTuple);
     await debug(`write tuple:${writeTuple}`);
   }
 );

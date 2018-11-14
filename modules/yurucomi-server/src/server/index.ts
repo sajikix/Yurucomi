@@ -57,7 +57,7 @@ const main = async () => {
 
   const io = socketIO(server, options);
   io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
+    sessionMiddleware(socket.request, socket.request.res || {}, next);
   });
   const linda = new Linda(io);
   linda.listen();

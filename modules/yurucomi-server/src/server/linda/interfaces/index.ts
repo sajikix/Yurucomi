@@ -51,6 +51,12 @@ export type IsMuchResponse = {
 export type LindaOperation = {
   tsName: string;
   payload: Tuple;
+  from?: string;
+};
+
+export type InsertOperation = {
+  payload: Tuple;
+  from: string;
 };
 
 export type LindaSubscribeOperation = {

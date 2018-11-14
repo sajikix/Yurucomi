@@ -36,24 +36,6 @@ export default class Main extends React.Component<Props, State> {
   }
 
   connect() {
-    // const tupleSpaceName = this.props.groupName;
-    // this.socket.emit("_join_tuplespace", {
-    //   tsName: tupleSpaceName,
-    // });
-    // this.socket.on("_watch_response", (resData: ResponseTuple) => {
-    //   console.log("watched");
-    //   const newEventList = [resData, ...this.state.eventList];
-    //   this.setState({
-    //     eventList: newEventList,
-    //   });
-    // });
-    // this.socket.emit("_get_my_props_settings", { tsName: "masuilab" });
-    // this.socket.on("_res_props_settings", (res: any) => {
-    //   console.log(res);
-    // });
-    // this.socket.on("_settings_update", (res: any) => {
-    //   console.log(res);
-    // });
     const watcher = new EventWatcher();
     watcher.listen(this.props.groupName);
     watcher.watch(data => {

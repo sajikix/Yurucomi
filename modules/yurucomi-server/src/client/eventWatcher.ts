@@ -37,7 +37,7 @@ export default class EventWatcher {
   watch(callback: (data: any) => void) {
     this.socket.on("_watch_response", (resData: any) => {
       const result = this.filter(resData._payload);
-      console.log("result", result);
+      console.log("result", resData);
       if (result.isMuch) {
         callback(result.data);
       }

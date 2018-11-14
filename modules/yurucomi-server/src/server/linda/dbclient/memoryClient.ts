@@ -3,6 +3,7 @@ import {
   Tuple,
   ResponseTuple,
   InsertData,
+  InsertOperation,
 } from "../interfaces";
 import memoryDB from "../db/memoryDB";
 
@@ -54,13 +55,12 @@ export default class storageClient {
     };
   }
 
-  async insert(writeTuple: Tuple): Promise<InsertData> {
+  async insert(insertOperation: InsertOperation): Promise<InsertData> {
     const time = Date.now();
     const insertData: InsertData = {
       _time: time,
-      // FIXME:決め打ち
-      _from: "saji",
-      _payload: writeTuple,
+      _from: insertOperation.from,
+      _payload: insertOperation.payload,
       _id: this.tupleSpace.length,
       _where: this.tupleSpaceName,
     };
