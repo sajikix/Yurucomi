@@ -38,8 +38,11 @@ export default class Main extends React.Component<Props, State> {
   connect() {
     const watcher = new EventWatcher();
     watcher.listen(this.props.groupName);
-    watcher.watch(data => {
-      const newList = [data, ...this.state.eventList];
+    watcher.watch(this.props.userName, data => {
+      const newList = [
+        `${JSON.stringify(data._payload)} from ${data._from}`,
+        ...this.state.eventList,
+      ];
       this.setState({ eventList: newList });
     });
   }
@@ -63,7 +66,7 @@ export default class Main extends React.Component<Props, State> {
         {this.props.groupName + "/" + JSON.stringify(this.props.userName)}
         <div>
           {this.state.eventList.map((value: any) => {
-            return <ul>{JSON.stringify(value)}</ul>;
+            return <ul>{value}</ul>;
           })}
         </div>
       </div>

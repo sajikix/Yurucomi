@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-
+import { Tuple } from "yurucomi-interfaces";
 const options = {
   reconnectionDelay: 5000,
   transports: ["websocket"],
@@ -34,31 +34,30 @@ export default class EventWatcher {
     });
   }
 
-  watch(callback: (data: any) => void) {
+  watch(userName: string, callback: (data: any) => void) {
     this.socket.on("_watch_response", (resData: any) => {
-      const result = this.filter(resData._payload);
-      console.log("result", resData);
+      const result = this.filter(resData, userName);
+      //console.log("result", resData);
       if (result.isMuch) {
         callback(result.data);
       }
     });
   }
 
-  filter(resData: { [key: string]: any }) {
+  filter(resData: any, userName: string) {
+    console.log("resData", resData);
     if (Object.keys(this.propsSettings).length === 0) {
-      return { isMuch: true, data: resData };
+      return { isMuch: false, data: null };
+    } else if (resData._from === userName) {
+      return { isMuch: false, data: null };
     } else {
       for (let prop of Object.keys(this.propsSettings)) {
-        console.log("prop", prop);
-        console.log("resData", resData);
-        if (resData.hasOwnProperty(prop)) {
-          console.log("place2");
+        if (resData._payload.hasOwnProperty(prop)) {
           if (
             this.propsSettings[prop].findIndex(ele => {
-              return ele.value === resData[prop];
+              return ele.value === resData._payload[prop];
             }) >= 0
           ) {
-            console.log("place3");
             return { isMuch: true, data: resData };
           }
         }

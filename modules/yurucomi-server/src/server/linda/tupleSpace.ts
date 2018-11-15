@@ -5,7 +5,6 @@ import {
   WatchCallback,
   WriteCallback,
   ReadTakeCallback,
-  InsertOneWriteOpResult,
   InsertOperation,
   WatchResponseTuple,
   InsertData,
@@ -61,13 +60,14 @@ export default class tupleSpace {
       }
     }
     const resData: InsertData = await this.storage.insert(insertData);
-    this.emitter.emit("_writeData", writeOperationData);
+    // this.emitter.emit("_writeData", writeOperationData);
+    this.emitter.emit("_writeData", insertData);
 
     callback(resData);
   }
 
   watch(watchOperationData: LindaOperation, callback: WatchCallback): void {
-    this.emitter.on("_writeData", (resTuple: LindaOperation) => {
+    this.emitter.on("_writeData", (resTuple: InsertOperation) => {
       let result: IsMuchResponse = this.storage.isMuch(
         resTuple.payload,
         watchOperationData.payload
@@ -75,9 +75,11 @@ export default class tupleSpace {
       if (result.isMuched) {
         const resData: WatchResponseTuple = {
           _time: Date.now(),
-          _from: this.tupleSpaceName,
-          _payload: result.res,
+          _where: this.tupleSpaceName,
+          _payload: resTuple.payload,
+          _from: resTuple.from || "",
         };
+        console.log(resData);
         callback(resData);
       }
     });

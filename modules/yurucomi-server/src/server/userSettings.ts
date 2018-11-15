@@ -11,18 +11,7 @@ type UserSettings = {
   };
 };
 
-const userSettings: UserSettings = {
-  // masuilab: {
-  //   saji: {
-  //     props: {
-  //       where: [{ value: "aaa", date: 1 }, { value: "bbb", date: 2 }],
-  //     },
-  //     memberSettings: {
-  //       shige: [],
-  //     },
-  //   },
-  // },
-};
+const userSettings: UserSettings = {};
 
 const getUserProps = async (tsName: string, userName: string) => {
   if (!userSettings[tsName]) {

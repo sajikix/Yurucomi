@@ -16,7 +16,7 @@ export type Tuple = {
 export type InsertData = {
   _time: number;
   _from: string;
-  _payload: Object;
+  _payload: Tuple;
   _id?: number;
   _where: string;
 };
@@ -38,8 +38,9 @@ export type ResponseTuple = {
 };
 
 export type WatchResponseTuple = {
+  _where: string;
   _time: number;
-  _from: string;
+  _from: string | undefined;
   _payload: Tuple | null;
 };
 
