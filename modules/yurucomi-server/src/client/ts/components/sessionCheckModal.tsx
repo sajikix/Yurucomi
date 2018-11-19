@@ -44,7 +44,11 @@ export default class sessionCheckModal extends React.Component<Props, State> {
       return <div>{"Loading"}</div>;
     }
     if (this.state.sessionChecked || true) {
-      return <div>{this.props.renderIfChecked(this.state.userName)}</div>;
+      return (
+        <div className={"session-check-modal"}>
+          {this.props.renderIfChecked(this.state.userName)}
+        </div>
+      );
     }
   }
 }

@@ -1,0 +1,73 @@
+.home {
+  display: flex;
+  align-content: space-between;
+  flex-direction: column;
+  height: 100%;
+  .caption-area {
+    flex-grow: 3;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .caption {
+      font-size: 5vh;
+      color: rgba(118, 118, 118, 1);
+    }
+  }
+  .input-area {
+    flex-grow: 4;
+    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    .input-area-child {
+      $height: 7vh;
+      width: 80vw;
+      display: flex;
+      height: $height;
+      .input-back {
+        width: 80%;
+        border: none;
+        border-radius: 3vh;
+        background-color: rgb(236, 239, 242);
+        input {
+          height: 100%;
+          width: 95%;
+          background-color: rgba(0, 0, 0, 0);
+          border: none;
+          font-size: 5vh;
+          color: rgba(118, 118, 118, 1);
+        }
+        input:focus {
+          outline: 0;
+        }
+      }
+      .button {
+        width: 20%;
+        height: $height;
+        margin-left: 1vw;
+        background-color: rgb(242, 109, 82);
+        border: none;
+        border-radius: 3vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        span {
+          font-size: $height * 0.7;
+          height: $height;
+        }
+      }
+      .button:active {
+        @extend .button;
+        background-color: rgb(191, 73, 49);
+      }
+    }
+  }
+  .link-area {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

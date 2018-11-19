@@ -5,8 +5,8 @@ import {
   Callback,
   ResponseTuple,
   ConnectCallback,
-} from "./interfaces/index";
-import EventWatcher from "./eventWatcher";
+} from "../interfaces/index";
+import EventWatcher from "../eventWatcher";
 
 type Props = { groupName: string; userName: string };
 
@@ -20,7 +20,7 @@ type EventInfo = {
   tuple: any;
 };
 
-export default class Main extends React.Component<Props, State> {
+export default class UserPage extends React.Component<Props, State> {
   socket: SocketIOClient.Socket;
   constructor(props: Props) {
     super(props);
@@ -62,7 +62,7 @@ export default class Main extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <div className={"user-page"}>
         {this.props.groupName + "/" + JSON.stringify(this.props.userName)}
         <div>
           {this.state.eventList.map((value: any) => {

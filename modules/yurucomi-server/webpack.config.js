@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   mode: "development",
-  entry: "./src/client/index.tsx",
+  entry: "./src/client/ts/index.tsx",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "public"),
@@ -25,6 +25,28 @@ module.exports = {
         },
       },
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      {
+        test: /\.scss/, // 対象となるファイルの拡張子
+        use: [
+          "style-loader",
+
+          {
+            loader: "css-loader",
+            options: {
+              url: false,
+              //sourceMap: enabledSourceMap,
+              // 2 => postcss-loader, sass-loader
+              importLoaders: 2,
+            },
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              //sourceMap: enabledSourceMap,
+            },
+          },
+        ],
+      },
     ],
   },
 

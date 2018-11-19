@@ -1,0 +1,28 @@
+.headder {
+  color: rgba(118, 118, 118, 1);
+  background-color: white;
+  border-bottom: rgb(236, 239, 242) solid 1px;
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .menu {
+    margin-left: 2vw;
+    margin-right: 2vw;
+    height: 3.5vh;
+    img {
+      height: 100%;
+    }
+  }
+  .title {
+    font-size: 5vh;
+  }
+  .setting {
+    margin-left: 2vw;
+    margin-right: 2vw;
+    height: 4vh;
+    img {
+      height: 100%;
+    }
+  }
+}

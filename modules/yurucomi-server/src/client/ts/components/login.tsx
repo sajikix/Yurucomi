@@ -68,7 +68,7 @@ export default class Login extends React.Component<Props, State> {
     }
 
     return (
-      <div>
+      <div className={"login"}>
         <p>{"enter your name"}</p>
         <input type="text" onChange={this.changeText} />
         {this.state.hasError && (

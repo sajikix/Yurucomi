@@ -1,0 +1,16 @@
+body {
+  background-color: white;
+  margin: 0%;
+  height: 100vw;
+}
+#root {
+  height: 100%;
+}
+#view-area {
+  height: 90vh;
+  // display: flex;
+  // flex-direction: column;
+}
+
+@import "./components/headder.scss";
+@import "./components/home.scss";
