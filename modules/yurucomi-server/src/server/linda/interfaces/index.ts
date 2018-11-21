@@ -84,7 +84,7 @@ export interface DeleteWriteOpResultObject {
 }
 
 export interface WatchCallback {
-  (resData: WatchResponseTuple): void;
+  (resData: WatchResponseTuple): Promise<void>;
 }
 
 export interface WriteCallback {

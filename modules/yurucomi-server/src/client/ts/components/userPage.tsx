@@ -7,16 +7,23 @@ import {
   ConnectCallback,
 } from "../interfaces/index";
 import EventWatcher from "../eventWatcher";
+import getIcon from "../getIcon";
+import SlideMenu from "./slideMenu";
 
-type Props = { groupName: string; userName: string };
+type Props = {
+  hideSlideMenu: boolean;
+  groupName: string;
+  userName: string;
+};
 
 type State = {
-  eventList: any;
+  eventList: Array<EventInfo>;
   reconnecting: boolean;
 };
 
 type EventInfo = {
-  with: Array<string>;
+  from: string;
+  fromImage: string;
   tuple: any;
 };
 
@@ -38,11 +45,14 @@ export default class UserPage extends React.Component<Props, State> {
   connect() {
     const watcher = new EventWatcher();
     watcher.listen(this.props.groupName);
-    watcher.watch(this.props.userName, data => {
+    watcher.watch(this.props.userName, async data => {
+      // const iconUrl = await getIcon(this.props.groupName, this.props.userName);
       const newList = [
-        `${JSON.stringify(data._payload)} from ${data._from}`,
+        { from: data._from, tuple: data._payload, fromImage: data._fromIcon },
         ...this.state.eventList,
       ];
+
+      console.log(newList);
       this.setState({ eventList: newList });
     });
   }
@@ -59,14 +69,22 @@ export default class UserPage extends React.Component<Props, State> {
       payload: tuple,
     });
   }
-
   render() {
     return (
       <div className={"user-page"}>
-        {this.props.groupName + "/" + JSON.stringify(this.props.userName)}
-        <div>
+        {!this.props.hideSlideMenu && <SlideMenu />}
+        <div className={"events"}>
           {this.state.eventList.map((value: any) => {
-            return <ul>{value}</ul>;
+            return (
+              <div className={"event-child"}>
+                <div className={"from-icon"}>
+                  <img src={value.fromImage} alt="" />
+                </div>
+                <div className={"tuple-area"}>
+                  <div className={"tuple"}>{JSON.stringify(value.tuple)}</div>
+                </div>
+              </div>
+            );
           })}
         </div>
       </div>

@@ -1,0 +1,100 @@
+.login {
+  display: flex;
+  align-content: space-between;
+  flex-direction: column;
+  height: 100%;
+  .caption-area {
+    flex-grow: 4;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    .caption {
+      font-size: 5vh;
+      color: rgba(118, 118, 118, 1);
+    }
+  }
+  .error-area {
+    flex-grow: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .error {
+      height: 3.5vh;
+      color: rgb(242, 109, 82);
+      font-size: 5vh;
+    }
+  }
+  .input-area {
+    flex-grow: 8;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    .input-area-child {
+      $height: 11vh;
+      width: 60vw;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      height: $height;
+      .input-caption {
+        margin-left: 1vh;
+        height: 4vh;
+        color: rgba(118, 118, 118, 1);
+      }
+      .input-back {
+        width: 100%;
+        height: 7vh;
+        border: none;
+        border-radius: 3vh;
+        background-color: rgb(236, 239, 242);
+        input {
+          height: 100%;
+          width: 95%;
+          background-color: rgba(0, 0, 0, 0);
+          border: none;
+          font-size: 5vh;
+          color: rgba(118, 118, 118, 1);
+        }
+        .initial {
+          @extend input;
+          color: rgb(170, 170, 170);
+        }
+        input:focus {
+          outline: 0;
+        }
+      }
+    }
+  }
+  .button-area {
+    flex-grow: 10;
+    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    .button {
+      width: 20%;
+      height: 7vh;
+      margin-left: 1vw;
+      background-color: rgb(242, 109, 82);
+      border: none;
+      border-radius: 3vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      span {
+        font-size: 7vh * 0.7;
+        height: 7vh;
+      }
+    }
+    .button:active {
+      @extend .button;
+      background-color: rgb(191, 73, 49);
+      color: rgb(236, 239, 242);
+    }
+  }
+}

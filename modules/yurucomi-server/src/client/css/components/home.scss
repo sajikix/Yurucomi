@@ -30,6 +30,7 @@
         border: none;
         border-radius: 3vh;
         background-color: rgb(236, 239, 242);
+
         input {
           height: 100%;
           width: 95%;
@@ -38,6 +39,7 @@
           font-size: 5vh;
           color: rgba(118, 118, 118, 1);
         }
+
         input:focus {
           outline: 0;
         }
@@ -61,6 +63,7 @@
       .button:active {
         @extend .button;
         background-color: rgb(191, 73, 49);
+        color: rgb(236, 239, 242);
       }
     }
   }

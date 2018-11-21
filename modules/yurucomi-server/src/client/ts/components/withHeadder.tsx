@@ -15,7 +15,7 @@ const withHeadder = <P extends object>(
     render() {
       return (
         <div id={"view-area"}>
-          <Headder />
+          {/* <Headder /> */}
           <ComposedComponent {...this.props} />
         </div>
       );

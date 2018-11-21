@@ -1,11 +1,16 @@
 import React from "react";
 import { RouteComponentProps, Redirect } from "react-router-dom";
+import withHeadder from "./withHeadder";
+import Headder from "./headder";
 
 type State = {
   hasError: boolean;
   sessionChecked: boolean;
-  inputName: string;
+  inputUserName: string;
+  inputGroupName: string;
   errorMes: string;
+  initialUser: boolean;
+  initialGroup: boolean;
 };
 
 type Props = RouteComponentProps;
@@ -17,18 +22,65 @@ export default class Login extends React.Component<Props, State> {
     super(props);
 
     this.state = {
+      initialUser: true,
+      initialGroup: true,
       hasError: false,
       errorMes: "",
       sessionChecked: false,
-      inputName: "",
+      inputUserName: "User Name ...",
+      inputGroupName: "Group Name ...",
     };
 
     this.login = this.login.bind(this);
-    this.changeText = this.changeText.bind(this);
+    this.changeUserName = this.changeUserName.bind(this);
+    this.changeGroupName = this.changeGroupName.bind(this);
+    this.initialUserFocus = this.initialUserFocus.bind(this);
+    this.initialGroupFocus = this.initialGroupFocus.bind(this);
+    this.GNameCheck = this.GNameCheck.bind(this);
+    this.UNameCheck = this.UNameCheck.bind(this);
   }
 
-  changeText(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ inputName: event.target.value });
+  changeUserName(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      inputUserName: event.target.value,
+    });
+  }
+  changeGroupName(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      inputGroupName: event.target.value,
+    });
+  }
+
+  GNameCheck() {
+    if (this.state.inputGroupName === "") {
+      this.setState({ initialGroup: true, inputGroupName: "Group Name ..." });
+    }
+  }
+
+  UNameCheck() {
+    if (this.state.inputUserName === "") {
+      this.setState({ initialUser: true, inputUserName: "User Name ..." });
+    }
+  }
+
+  initialUserFocus() {
+    this.setState({ errorMes: "" });
+    if (this.state.initialUser) {
+      this.setState({
+        inputUserName: "",
+        initialUser: false,
+      });
+    }
+  }
+
+  initialGroupFocus() {
+    this.setState({ errorMes: "" });
+    if (this.state.initialGroup) {
+      this.setState({
+        inputGroupName: "",
+        initialGroup: false,
+      });
+    }
   }
 
   getParam(name: string) {
@@ -41,12 +93,25 @@ export default class Login extends React.Component<Props, State> {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
 
+  componentDidMount() {
+    const groupName = this.getParam("where");
+    if (groupName) {
+      this.setState({
+        inputGroupName: groupName,
+        initialGroup: false,
+      });
+    }
+  }
+
   async login() {
     try {
       console.log("login");
       const response = await fetch(here + "/_login", {
-        method: "POST", // or 'PUT'
-        body: JSON.stringify({ userName: this.state.inputName }), // data can be `string` or {object}!
+        method: "POST",
+        body: JSON.stringify({
+          userName: this.state.inputUserName.toLowerCase(),
+          groupName: this.state.inputGroupName,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -55,27 +120,79 @@ export default class Login extends React.Component<Props, State> {
       if (result) {
         this.setState({ sessionChecked: true });
       } else {
-        this.setState({ hasError: true, errorMes: "login faild" });
+        this.setState({
+          hasError: true,
+          errorMes: "login faild",
+        });
       }
     } catch (e) {
-      this.setState({ hasError: true, errorMes: "network error" });
+      this.setState({
+        hasError: true,
+        errorMes: "network error",
+      });
     }
   }
 
   render() {
     if (this.state.sessionChecked) {
-      return <Redirect to={`/${this.getParam("where")}`} />;
+      return <Redirect to={`/${this.state.inputGroupName}`} />;
     }
 
     return (
-      <div className={"login"}>
-        <p>{"enter your name"}</p>
-        <input type="text" onChange={this.changeText} />
-        {this.state.hasError && (
-          <p style={{ color: "red" }}>{this.state.errorMes}</p>
-        )}
-        <button onClick={this.login} value={"login"} />
+      <div id={"view-area"}>
+        <Headder
+          switchSlideMenu={() => {}}
+          userName={"Yurucomi"}
+          userIcon={"./images/setting.png"}
+          groupName={this.getParam("where") || "Yurucomi"}
+          loggedIn={false}
+        />
+        <div className={"login"}>
+          <div className={"caption-area"}>
+            <div className={"caption"}>{"Please Login"}</div>
+          </div>
+          <div className={"error-area"}>
+            <div className={"error"}>
+              {this.state.hasError ? this.state.errorMes : ""}
+            </div>
+          </div>
+          <div className={"input-area"}>
+            <div className={"input-area-child"}>
+              <div className={"input-caption"}>{"GroupName"}</div>
+              <div className={"input-back"}>
+                <input
+                  className={this.state.initialGroup ? "initial" : ""}
+                  value={this.state.inputGroupName}
+                  type="text"
+                  onChange={this.changeGroupName}
+                  onFocus={this.initialGroupFocus}
+                  onBlur={this.GNameCheck}
+                />
+              </div>
+            </div>
+            <div className={"input-area-child"}>
+              <div className={"input-caption"}>{"UserName"}</div>
+              <div className={"input-back"}>
+                <input
+                  className={this.state.initialUser ? "initial" : ""}
+                  value={this.state.inputUserName}
+                  type="text"
+                  onChange={this.changeUserName}
+                  onFocus={this.initialUserFocus}
+                  onBlur={this.UNameCheck}
+                />
+              </div>
+            </div>
+          </div>
+          <div className={"button-area"}>
+            <div className={"button"} onClick={this.login}>
+              <span>{"Login"}</span>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 }
+
+//export default withHeadder(Login);

@@ -5,7 +5,13 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { createServer, Server } from "http";
 import socketIO from "socket.io";
-import { routeMain, routeApi, routeLogin, routeSessionCheck } from "./routes";
+import {
+  routeMain,
+  routeApi,
+  routeLogin,
+  routeSessionCheck,
+  routeTop,
+} from "./routes";
 import _debug from "debug";
 import sessionCheck from "./sessionCheck";
 import emitter from "./eventEmitter";
@@ -51,6 +57,7 @@ const main = async () => {
   app.use(sessionMiddleware);
 
   app.use("/_api", routeApi);
+  app.use("/", routeTop);
   app.use("/_login", routeLogin);
   app.use("/_sessioncheck", routeSessionCheck);
   app.use("/", sessionCheck, routeMain);

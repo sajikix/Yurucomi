@@ -1,0 +1,10 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  .text {
+    font-size: 8vh;
+    color: rgb(118, 118, 118);
+  }
+}

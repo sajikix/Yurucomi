@@ -1,5 +1,4 @@
 import tupleSpace from "./tupleSpace";
-import { Server } from "http";
 import {
   LindaOperation,
   ResponseTuple,
@@ -9,6 +8,7 @@ import {
   InsertData,
 } from "./interfaces";
 import _debug from "debug";
+import getIcon from "./getIcon";
 const debug = _debug("server:linda");
 
 export default class Linda {
@@ -45,8 +45,13 @@ export default class Linda {
       socket.on("_watch_operation", (data: LindaOperation) => {
         this.tupleSpace(data.tsName).watch(
           data,
-          (resData: WatchResponseTuple) => {
-            socket.emit("_watch_response", resData);
+          async (resData: WatchResponseTuple) => {
+            const icon = await getIcon("masuiulab", resData._from || "");
+            const res = {
+              ...resData,
+              _fromIcon: icon,
+            };
+            socket.emit("_watch_response", res);
           }
         );
       });

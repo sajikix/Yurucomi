@@ -1,18 +1,32 @@
 .headder {
   color: rgba(118, 118, 118, 1);
   background-color: white;
-  border-bottom: rgb(236, 239, 242) solid 1px;
+  border-bottom: rgb(236, 239, 242) solid 1.5px;
   height: 8vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .menu {
+  .menu-back {
     margin-left: 2vw;
     margin-right: 2vw;
-    height: 3.5vh;
-    img {
-      height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 6vh;
+    width: 6vh;
+    border-radius: 50%;
+    .menu {
+      height: 3.5vh;
+      img {
+        height: 100%;
+      }
     }
+  }
+  .menu-back:hover {
+    background-color: rgb(236, 239, 242);
+  }
+  .menu-back:active {
+    background-color: rgb(118, 118, 118);
   }
   .title {
     font-size: 5vh;
@@ -20,9 +34,15 @@
   .setting {
     margin-left: 2vw;
     margin-right: 2vw;
-    height: 4vh;
-    img {
-      height: 100%;
+    height: 6vh;
+    .setting-icon {
+      margin-top: 15%;
+      height: 70%;
+    }
+    .user-icon {
+      height: 6vh;
+      width: 6vh;
+      border-radius: 50%;
     }
   }
 }
