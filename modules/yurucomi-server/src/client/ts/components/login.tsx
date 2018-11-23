@@ -1,6 +1,5 @@
 import React from "react";
 import { RouteComponentProps, Redirect } from "react-router-dom";
-import withHeadder from "./withHeadder";
 import Headder from "./headder";
 
 type State = {

@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 
 type Props = {};
 type State = {};
@@ -8,6 +9,7 @@ class SlideMenu extends React.Component<Props, State> {
     super(props);
     this.state = {};
   }
+  logout() {}
   render() {
     return (
       <div className={"slide-menu"}>
@@ -24,10 +26,21 @@ class SlideMenu extends React.Component<Props, State> {
           <div className={"empty-text"}>{""}</div>
         </div>
 
-        <div className={"menu-child"}>
+        <div
+          className={"menu-child"}
+          onClick={() => {
+            window.location.href = location.origin;
+          }}
+        >
           <div className={"menu-title"}>{"Top"}</div>
         </div>
-        <div className={"menu-child"}>
+        <div
+          className={"menu-child"}
+          onClick={() => {
+            this.logout();
+            window.location.href = location.origin + "/_login";
+          }}
+        >
           <div className={"menu-title"}>{"Logout"}</div>
         </div>
       </div>

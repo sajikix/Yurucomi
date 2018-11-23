@@ -1,5 +1,4 @@
 import React from "react";
-import withHeadder from "./withHeadder";
 import { Redirect } from "react-router-dom";
 import "../../css/components/home.scss";
 import Headdder from "./headder";
@@ -76,5 +75,3 @@ export default class Home extends React.Component<Props, State> {
     );
   }
 }
-
-// export default withHeadder(Home);

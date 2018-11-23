@@ -3,7 +3,6 @@ import SessionCheckModal from "./sessionCheckModal";
 import { RouteComponentProps } from "react-router-dom";
 import Userpage from "./userPage";
 import Headder from "./headder";
-import withHeadder from "./withHeadder";
 
 type Props = RouteComponentProps<{ groupName: string }>;
 type State = {
@@ -50,5 +49,3 @@ export default class Main extends React.Component<Props, State> {
     );
   }
 }
-
-// export default withHeadder(Main);

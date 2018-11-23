@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { RouteComponentProps, Redirect } from "react-router-dom";
 import Headder from "./headder";
 import Loading from "./loading";
 
