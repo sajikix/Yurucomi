@@ -1,15 +1,23 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
-
 type Props = {};
 type State = {};
+
+const here: string = location.protocol + "//" + location.host;
 
 class SlideMenu extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {};
   }
-  logout() {}
+  async logout() {
+    try {
+      const response = await fetch(here + "/_logout");
+      const resData = await response.json();
+      if (resData.logouted) {
+        window.location.href = location.origin + "/_login";
+      }
+    } catch (e) {}
+  }
   render() {
     return (
       <div className={"slide-menu"}>
@@ -38,7 +46,6 @@ class SlideMenu extends React.Component<Props, State> {
           className={"menu-child"}
           onClick={() => {
             this.logout();
-            window.location.href = location.origin + "/_login";
           }}
         >
           <div className={"menu-title"}>{"Logout"}</div>

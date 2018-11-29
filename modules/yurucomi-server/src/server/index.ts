@@ -11,6 +11,7 @@ import {
   routeLogin,
   routeSessionCheck,
   routeTop,
+  routeLogout,
 } from "./routes";
 import _debug from "debug";
 import sessionCheck from "./sessionCheck";
@@ -58,6 +59,7 @@ const main = async () => {
 
   app.use("/_api", routeApi);
   app.use("/", routeTop);
+  app.use("/_logout", routeLogout);
   app.use("/_login", routeLogin);
   app.use("/_sessioncheck", routeSessionCheck);
   app.use("/", sessionCheck, routeMain);

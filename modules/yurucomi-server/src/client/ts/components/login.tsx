@@ -104,7 +104,6 @@ export default class Login extends React.Component<Props, State> {
 
   async login() {
     try {
-      console.log("login");
       const response = await fetch(here + "/_login", {
         method: "POST",
         body: JSON.stringify({
