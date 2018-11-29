@@ -6,10 +6,12 @@
   "scripts": {
     "start": "node dist/index.js",
     "start:dev": "DEBUG=server:*,nodemon:* NODE_ENV=development nodemon src/server/index.ts --exec babel-node --watch src --watch public --extensions '.ts'",
-    "build-server": "npm run build:clean && npm run build:babel",
+    "build": "npm run build-server && npm run build-webpack",
+    "build-server": "npm run build-server:clean && npm run build-server:babel",
     "build-server:clean": "rm -rf dist && mkdir -p dist",
     "build-server:babel": "../../node_modules/.bin/babel src/server --out-dir dist --source-maps --extensions '.ts'",
-    "build-webpack": "webpack -p --progress --watch --config webpack.config.js",
+    "build-webpack": "webpack -p --progress --config webpack.config.js",
+    "build-webpack-watch": "webpack -p --progress --watch --config webpack.config.js",
     "type-check": "../../node_modules/.bin/tsc --noEmit",
     "test": "echo no test"
   },
