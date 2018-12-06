@@ -38,7 +38,7 @@
     "@types/react-router-dom": "^4.3.1",
     "@types/socket.io": "^1.4.38",
     "@types/socket.io-client": "^1.4.32",
-    "awesome-typescript-loader": "^5.2.1",
+    "ts-loader": "^5.2.1",
     "lerna": "^2.11.0",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3",
@@ -69,5 +69,8 @@
     "socket.io-client": "^2.1.1",
     "style-loader": "^0.23.1",
     "yurucomi-interfaces": "^0.0.1"
+  },
+  "engines": {
+    "node": "10.14.0"
   }
 }

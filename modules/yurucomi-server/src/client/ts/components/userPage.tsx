@@ -31,7 +31,7 @@ export default class UserPage extends React.Component<Props, State> {
   socket: SocketIOClient.Socket;
   constructor(props: Props) {
     super(props);
-    this.socket = io("http://localhost:3000");
+    this.socket = io(location.origin);
     this.state = { eventList: [], reconnecting: false };
     this.connect = this.connect.bind(this);
     this.addWatchTuple = this.addWatchTuple.bind(this);

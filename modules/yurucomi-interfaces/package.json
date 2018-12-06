@@ -1,7 +1,7 @@
 {
   "name": "yurucomi-interfaces",
   "version": "0.0.1",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "license": "MIT",
   "private": true,
   "scripts": {

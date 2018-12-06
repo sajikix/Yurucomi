@@ -14,7 +14,7 @@ module.exports = {
         test: /\.(tsx?)$/,
         exclude: ["/node_modules/"],
         use: {
-          loader: "awesome-typescript-loader",
+          loader: "ts-loader",
           options: {
             compilerOptions: {
               target: "es6",

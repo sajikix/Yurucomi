@@ -37,7 +37,8 @@ export default class Home extends React.Component<Props, State> {
   }
   render() {
     if (this.state.redirect) {
-      return <Redirect to={`/${this.state.textInput}`} />;
+      window.location.href = location.origin + "/" + this.state.textInput;
+      return null;
     }
     return (
       <div id={"view-area"}>
