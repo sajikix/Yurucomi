@@ -1,12 +1,7 @@
 type UserSettings = {
   [TupleSpaceName: string]: {
     [UserName: string]: {
-      props: {
-        [PropsName: string]: Array<{ value: any; date: number }>;
-      };
-      memberSettings: {
-        [MenmberName: string]: Array<any>;
-      };
+      [PropsName: string]: Array<{ value: any; date: number }>;
     };
   };
 };
@@ -16,11 +11,11 @@ const userSettings: UserSettings = {};
 const getUserProps = async (tsName: string, userName: string) => {
   if (!userSettings[tsName]) {
     userSettings[tsName] = {};
-    userSettings[tsName][userName] = { props: {}, memberSettings: {} };
+    userSettings[tsName][userName] = {};
   } else if (!userSettings[tsName][userName]) {
-    userSettings[tsName][userName] = { props: {}, memberSettings: {} };
+    userSettings[tsName][userName] = {};
   }
-  return userSettings[tsName][userName].props;
+  return userSettings[tsName][userName];
 };
 
 export default userSettings;

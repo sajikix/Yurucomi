@@ -10,3 +10,8 @@ export type ResponseData = {
 export type Tuple = {
   [key: string]: number | string | boolean | Object;
 };
+
+export type YurucomiWatchOperation = {
+  tsName: string;
+  from: string;
+};

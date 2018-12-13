@@ -34,7 +34,6 @@ export default class sessionCheckModal extends React.Component<Props, State> {
     const response = await fetch(here + "/_sessioncheck");
     const { result, name, icon } = await response.json();
     if (result) {
-      console.log();
       this.setState({ userName: name, sessionChecked: true, userIcon: icon });
     }
     this.setState({ fetching: false });

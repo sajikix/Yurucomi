@@ -6,7 +6,7 @@ import {
   ResponseTuple,
   ConnectCallback,
 } from "../interfaces/index";
-import EventWatcher from "../eventWatcher";
+import YurucomiClient from "../yurucomiClient";
 import getIcon from "../getIcon";
 import SlideMenu from "./slideMenu";
 
@@ -43,12 +43,16 @@ export default class UserPage extends React.Component<Props, State> {
   }
 
   connect() {
-    const watcher = new EventWatcher();
-    watcher.listen(this.props.groupName);
-    watcher.watch(this.props.userName, async data => {
+    const yurucomiClient = new YurucomiClient();
+    yurucomiClient.listen(this.props.groupName, this.props.userName);
+    yurucomiClient.watch(async event => {
       // const iconUrl = await getIcon(this.props.groupName, this.props.userName);
       const newList = [
-        { from: data._from, tuple: data._payload, fromImage: data._fromIcon },
+        {
+          from: event._from,
+          tuple: event._payload,
+          fromImage: event._fromIcon,
+        },
         ...this.state.eventList,
       ];
 

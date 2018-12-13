@@ -1,8 +1,11 @@
-import { InsertData } from "./linda/interfaces";
+import { InsertData } from "../linda/interfaces";
 import userSettings from "./userSettings";
 import emitter from "./eventEmitter";
 
 const updater = async (data: InsertData) => {
+  if (data._from === undefined) {
+    data._from = "_unkown";
+  }
   const validatedData = await Object.entries(data._payload).map(ele => {
     return { key: ele[0], value: ele[1], date: Date.now() };
   });
@@ -11,23 +14,23 @@ const updater = async (data: InsertData) => {
     userSettings[data._where] = {};
   }
   if (!userSettings[data._where][data._from]) {
-    userSettings[data._where][data._from] = { props: {}, memberSettings: {} };
+    userSettings[data._where][data._from] = {};
   }
-  const settings = userSettings[data._where][data._from];
+  const settings = Object.assign({}, userSettings[data._where][data._from]);
   for (let d of validatedData) {
-    if (settings.props[d.key]) {
-      let index = settings.props[d.key].findIndex(ele => {
+    if (settings[d.key]) {
+      let index = settings[d.key].findIndex(ele => {
         return ele.value === d.value;
       });
       if (index !== -1) {
-        settings.props[d.key].splice(index, 1);
+        settings[d.key].splice(index, 1);
       }
-      settings.props[d.key].unshift({
+      settings[d.key].unshift({
         value: d.value,
         date: d.date,
       });
     } else {
-      settings.props[d.key] = [
+      settings[d.key] = [
         {
           value: d.value,
           date: d.date,
@@ -35,10 +38,13 @@ const updater = async (data: InsertData) => {
       ];
     }
   }
-  emitter.emit("_settings_update", {
-    userName: data._from,
-    tsName: data._where,
+  userSettings[data._where][data._from] = settings;
+  emitter.emit("setting_updated", {
+    where: data._where,
+    who: data._from,
+    settings: userSettings[data._where][data._from],
   });
+  return { [data._where]: settings };
 };
 
 export default updater;

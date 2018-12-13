@@ -16,11 +16,11 @@
     "test": "echo no test"
   },
   "devDependencies": {
-    "@babel/node": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/plugin-transform-typescript": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/node": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/plugin-transform-typescript": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
     "@babel/preset-typescript": "^7.1.0",
     "@babel/register": "^7.0.0",
     "@types/axios": "^0.14.0",
@@ -67,7 +67,8 @@
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
     "style-loader": "^0.23.1",
-    "yurucomi-interfaces": "^0.0.1"
+    "yurucomi-interfaces": "^0.0.1",
+    "yurucomi-linda": "^0.0.1"
   },
   "engines": {
     "node": "10.14.0"

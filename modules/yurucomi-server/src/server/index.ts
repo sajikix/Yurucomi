@@ -15,10 +15,10 @@ import {
 } from "./routes";
 import _debug from "debug";
 import sessionCheck from "./sessionCheck";
-import emitter from "./eventEmitter";
 import session from "express-session";
-import Linda from "./linda";
-import settingListener from "./settingListener";
+import Yurucomi from "./yurucomi";
+//import Linda from "./linda";
+// import settingListener from "./settingListener";
 
 const debug = _debug("server:main");
 dotenv.load();
@@ -68,11 +68,11 @@ const main = async () => {
   io.use((socket, next) => {
     sessionMiddleware(socket.request, socket.request.res || {}, next);
   });
-  const linda = new Linda(io);
-  linda.listen();
-  settingListener(io);
+  const yurucomi = new Yurucomi(io);
+  yurucomi.listen();
+  // settingListener(io);
 
-  app.set("linda", linda);
+  app.set("yurucomi", yurucomi);
   app.set("io", io);
 
   server.listen(PORT, async () => {
