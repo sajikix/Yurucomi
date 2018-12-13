@@ -1,5 +1,3 @@
-import { ObjectId } from "bson";
-
 export type Tuples = [Tuple];
 
 export type TupleSpace = {
@@ -12,7 +10,7 @@ export type Memory = {
 
 export type Tuple = {
   [key: string]: number | string | boolean | Object;
-};
+} & {};
 export type InsertData = {
   _time: number;
   _from: string;
@@ -40,8 +38,8 @@ export type ResponseTuple = {
 export type WatchResponseTuple = {
   _where: string;
   _time: number;
-  _from: string | undefined;
-  _payload: Tuple | null;
+  _from: string;
+  _payload: Tuple;
 };
 
 export type IsMuchResponse = {
@@ -54,34 +52,28 @@ export type LindaOperation = {
   payload: Tuple;
   from?: string;
 };
-
-export type InsertOperation = {
-  payload: Tuple;
-  from: string;
-};
-
-export type LindaSubscribeOperation = {
+export type LindaWatchOperation = {
   tsName: string;
   payload: Tuple;
   from: string;
 };
 
-export interface InsertOneWriteOpResult {
-  insertedCount: number;
-  ops: Array<any>;
-  insertedId: ObjectId;
-  connection: any;
-  result: { ok: number; n: number };
-}
+export type LindaWriteOperation = {
+  tsName: string;
+  payload: Tuple;
+  from: string;
+};
 
-export interface DeleteWriteOpResultObject {
-  result: {
-    ok?: number;
-    n?: number;
-  };
-  connection?: any;
-  deletedCount?: number;
-}
+export type LindaReadOperation = {
+  tsName: string;
+  payload: Tuple;
+  from?: string;
+};
+
+export type InsertOperation = {
+  payload: Tuple;
+  from: string;
+};
 
 export interface WatchCallback {
   (resData: WatchResponseTuple): Promise<void>;

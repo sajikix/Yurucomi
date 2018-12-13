@@ -7,7 +7,7 @@ import {
 } from "../interfaces";
 import memoryDB from "../db/memoryDB";
 
-import settingUpdater from "../../settingUpdater";
+//import settingUpdater from "../../settingUpdater";
 import _debug from "debug";
 const debug = _debug("server:memoryClient");
 
@@ -65,7 +65,7 @@ export default class storageClient {
       _where: this.tupleSpaceName,
     };
     await this.tupleSpace.unshift(insertData);
-    await settingUpdater(insertData);
+    //await settingUpdater(insertData);
     return insertData;
   }
   //FIXME:
