@@ -9,7 +9,6 @@ import {
 } from "../linda/interfaces";
 import { YurucomiWatchOperation } from "yurucomi-interfaces";
 import settingsUpdater from "./settingUpdater";
-import userSettings from "./userSettings";
 import checkMatchUsers from "./checkMatchUsers";
 import emitter from "./eventEmitter";
 import getUserIcon from "./getUserIcon";
@@ -23,6 +22,10 @@ export default class Yurucomi {
     this.io = io;
     this.linda = new Linda();
   }
+  /*
+  connct関数を作りたい
+  lindaとyurucomiの各メソッドを繋げる
+  */
   watch(
     watchOperation: LindaWatchOperation,
     callback: (res: WatchResponseTuple) => void
