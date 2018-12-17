@@ -15,3 +15,19 @@ export type YurucomiWatchOperation = {
   tsName: string;
   from: string;
 };
+
+export type Settings = {
+  [tsNamw: string]: {
+    [userName: string]: Setting;
+  };
+};
+
+export type Setting = {
+  [propName: string]: Array<{ value: any; date: number }>;
+};
+
+export type SettingUpdateData = {
+  tsName: string;
+  userName: string;
+  settings: Settings;
+};

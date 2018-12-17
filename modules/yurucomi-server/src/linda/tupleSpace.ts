@@ -67,7 +67,6 @@ export default class tupleSpace {
 
   watch(watchOperationData: LindaOperation, callback: WatchCallback): void {
     this.emitter.on("_writeData", (resTuple: InsertOperation) => {
-      console.log("resTuple", resTuple);
       let result: IsMuchResponse = this.storage.isMuch(
         resTuple.payload,
         watchOperationData.payload

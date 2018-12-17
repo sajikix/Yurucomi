@@ -1,4 +1,5 @@
 import settings from "./userSettings";
+import Asearch from "asearch";
 import { InsertData } from "../linda/interfaces";
 
 const checkMatchUsers = async (data: InsertData) => {
@@ -8,7 +9,9 @@ const checkMatchUsers = async (data: InsertData) => {
     for (let prop in data._payload) {
       if (settings[data._where][user].hasOwnProperty(prop)) {
         const matched = settings[data._where][user][prop].find(ele => {
-          return ele.value === data._payload[prop];
+          const a = new Asearch(ele.value);
+          // return ele.value === data._payload[prop];
+          return a.match(data._payload[prop], 1);
         });
         if (matched && data._from !== user) {
           Users.push(user);
@@ -16,7 +19,6 @@ const checkMatchUsers = async (data: InsertData) => {
       }
     }
   }
-  console.log(Users);
   return Users;
 };
 

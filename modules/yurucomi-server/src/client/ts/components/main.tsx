@@ -19,7 +19,6 @@ export default class Main extends React.Component<Props, State> {
   }
 
   switchSlideMenu() {
-    console.log("sw");
     this.setState({
       hideSlideMenu: !this.state.hideSlideMenu,
     });

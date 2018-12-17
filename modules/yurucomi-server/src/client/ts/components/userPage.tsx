@@ -1,13 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
-import {
-  Tuple,
-  Callback,
-  ResponseTuple,
-  ConnectCallback,
-} from "../interfaces/index";
 import YurucomiClient from "../yurucomiClient";
-import getIcon from "../getIcon";
 import SlideMenu from "./slideMenu";
 
 type Props = {
@@ -34,7 +27,6 @@ export default class UserPage extends React.Component<Props, State> {
     this.socket = io(location.origin);
     this.state = { eventList: [], reconnecting: false };
     this.connect = this.connect.bind(this);
-    this.addWatchTuple = this.addWatchTuple.bind(this);
   }
 
   validate(nameArray: Array<string>, myName: string) {
@@ -45,8 +37,7 @@ export default class UserPage extends React.Component<Props, State> {
   connect() {
     const yurucomiClient = new YurucomiClient();
     yurucomiClient.listen(this.props.groupName, this.props.userName);
-    yurucomiClient.watch(async event => {
-      // const iconUrl = await getIcon(this.props.groupName, this.props.userName);
+    yurucomiClient.watch(event => {
       const newList = [
         {
           from: event._from,
@@ -55,8 +46,6 @@ export default class UserPage extends React.Component<Props, State> {
         },
         ...this.state.eventList,
       ];
-
-      console.log(newList);
       this.setState({ eventList: newList });
     });
   }
@@ -67,12 +56,6 @@ export default class UserPage extends React.Component<Props, State> {
 
   componentDidUpdate() {}
 
-  addWatchTuple(tuple: Tuple) {
-    this.socket.emit("_watch_operation", {
-      tsName: this.props.groupName,
-      payload: tuple,
-    });
-  }
   render() {
     return (
       <div className={"user-page"}>

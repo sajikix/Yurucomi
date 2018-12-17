@@ -7,11 +7,12 @@ import {
   InsertData,
   ResponseTuple,
 } from "../linda/interfaces";
-import { YurucomiWatchOperation } from "yurucomi-interfaces";
+import { YurucomiWatchOperation, SettingUpdateData } from "yurucomi-interfaces";
 import settingsUpdater from "./settingUpdater";
 import checkMatchUsers from "./checkMatchUsers";
 import emitter from "./eventEmitter";
 import getUserIcon from "./getUserIcon";
+import mergeLocalSettingsData from "./mergeLocalSettingsData";
 import _debug from "debug";
 const debug = _debug("linda-connector");
 
@@ -67,6 +68,10 @@ export default class Yurucomi {
         this.write(data, (resData: InsertData) => {
           socket.emit("_write_response", resData);
         });
+      });
+      socket.on("_local_settings", (data: SettingUpdateData) => {
+        console.log("data", data);
+        mergeLocalSettingsData(data);
       });
       socket.on("_watch_operation", (data: YurucomiWatchOperation) => {
         const lindaWtachOperation = Object.assign(data, { payload: {} });

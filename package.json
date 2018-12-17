@@ -16,6 +16,6 @@
     "@babel/core": "^7.2.0",
     "lerna": "^3.6.0",
     "prettier": "^1.15.3",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.2"
   }
 }

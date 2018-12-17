@@ -1,12 +1,13 @@
-type UserSettings = {
-  [TupleSpaceName: string]: {
-    [UserName: string]: {
-      [PropsName: string]: Array<{ value: any; date: number }>;
-    };
-  };
-};
+// type UserSettings = {
+//   [TupleSpaceName: string]: {
+//     [UserName: string]: {
+//       [PropsName: string]: Array<{ value: any; date: number }>;
+//     };
+//   };
+// };
+import { Settings } from "yurucomi-interfaces";
 
-const userSettings: UserSettings = {};
+const userSettings: Settings = {};
 
 const getUserProps = async (tsName: string, userName: string) => {
   if (!userSettings[tsName]) {

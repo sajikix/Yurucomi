@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
+    "target": "esnext",
     "jsx": "react",
     "lib": ["dom", "es6", "es2016", "es2017"],
-    "typeRoots": ["./node_modules/@types", "../../typings"]
+    "typeRoots": ["./node_modules/@types", "../../typings"],
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules"],
-  "extends": "../../tsconfig"
+  "exclude": ["node_modules"]
 }
