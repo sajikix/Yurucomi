@@ -1,6 +1,7 @@
 import { InsertData } from "../linda/interfaces";
 import userSettings from "./userSettings";
-import emitter from "./eventEmitter";
+import emitter from "./utils/eventEmitter";
+import collection from "./utils/mongodb";
 
 const updater = async (data: InsertData) => {
   if (data._from === undefined) {
@@ -44,6 +45,14 @@ const updater = async (data: InsertData) => {
     who: data._from,
     settings: userSettings[data._where][data._from],
   });
+  const replaceData = Object.assign({}, userSettings[data._where][data._from], {
+    _from: data._from,
+  });
+  await collection(data._where).findOneAndReplace(
+    { _from: data._from },
+    replaceData,
+    { upsert: true }
+  );
   return { [data._where]: settings };
 };
 

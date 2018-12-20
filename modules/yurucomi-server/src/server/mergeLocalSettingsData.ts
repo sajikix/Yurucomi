@@ -13,8 +13,6 @@ const mergeLocalSettingsData = (data: SettingUpdateData) => {
     userSettings[data.tsName][data.userName]
   );
 
-  console.log("new", newSettings);
-
   userSettings[data.tsName][data.userName] = newSettings;
 };
 

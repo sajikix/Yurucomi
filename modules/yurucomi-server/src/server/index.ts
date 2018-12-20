@@ -14,11 +14,9 @@ import {
   routeLogout,
 } from "./routes";
 import _debug from "debug";
-import sessionCheck from "./sessionCheck";
+import sessionCheck from "./utils/sessionCheck";
 import session from "express-session";
 import Yurucomi from "./yurucomi";
-//import Linda from "./linda";
-// import settingListener from "./settingListener";
 
 const debug = _debug("server:main");
 dotenv.load();
@@ -70,7 +68,6 @@ const main = async () => {
   });
   const yurucomi = new Yurucomi(io);
   yurucomi.listen();
-  // settingListener(io);
 
   app.set("yurucomi", yurucomi);
   app.set("io", io);

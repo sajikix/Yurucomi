@@ -1,5 +1,5 @@
 import express from "express";
-const sessionCheck = (
+const sessionCheck = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction

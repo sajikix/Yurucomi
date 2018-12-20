@@ -14,17 +14,15 @@ export default class EventWatcher {
   }
 
   listen(tupleSpaceName: string, userName: string) {
-    this.socket.emit("_local_settings", {
+    this.socket.emit("_connected", {
       tsName: tupleSpaceName,
       userName: userName,
-      settings: JSON.parse(localStorage.getItem(tupleSpaceName) || "{}"),
     });
     this.socket.emit("_watch_operation", {
       tsName: tupleSpaceName,
       from: userName,
     });
     this.socket.on("_setting_update", (settings: any) => {
-      console.log("settings", settings);
       localStorage.setItem(tupleSpaceName, JSON.stringify(settings.settings));
     });
   }
