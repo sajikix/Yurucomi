@@ -2,6 +2,8 @@ import React from "react";
 import io from "socket.io-client";
 import YurucomiClient from "../yurucomiClient";
 import SlideMenu from "./slideMenu";
+import Events from "./events";
+import Watching from "./watching";
 
 type Props = {
   hideSlideMenu: boolean;
@@ -10,8 +12,7 @@ type Props = {
 };
 
 type State = {
-  eventList: Array<EventInfo>;
-  reconnecting: boolean;
+  pageName: string;
 };
 
 type EventInfo = {
@@ -24,56 +25,35 @@ export default class UserPage extends React.Component<Props, State> {
   socket: SocketIOClient.Socket;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      pageName: "events",
+    };
     this.socket = io(location.origin);
-    this.state = { eventList: [], reconnecting: false };
-    this.connect = this.connect.bind(this);
+    this.changePage = this.changePage.bind(this);
   }
 
-  validate(nameArray: Array<string>, myName: string) {
-    const result = nameArray.filter(n => n !== myName);
-    return result;
+  changePage(pageName: string) {
+    this.setState({ pageName });
   }
-
-  connect() {
-    const yurucomiClient = new YurucomiClient();
-    yurucomiClient.listen(this.props.groupName, this.props.userName);
-    yurucomiClient.watch(event => {
-      const newList = [
-        {
-          from: event._from,
-          tuple: event._payload,
-          fromImage: event._fromIcon,
-        },
-        ...this.state.eventList,
-      ];
-      this.setState({ eventList: newList });
-    });
-  }
-
-  componentDidMount() {
-    this.connect();
-  }
-
-  componentDidUpdate() {}
 
   render() {
     return (
       <div className={"user-page"}>
-        {!this.props.hideSlideMenu && <SlideMenu />}
-        <div className={"events"}>
-          {this.state.eventList.map((value: any) => {
-            return (
-              <div className={"event-child"}>
-                <div className={"from-icon"}>
-                  <img src={value.fromImage} alt="" />
-                </div>
-                <div className={"tuple-area"}>
-                  <div className={"tuple"}>{JSON.stringify(value.tuple)}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {!this.props.hideSlideMenu && (
+          <SlideMenu changePage={this.changePage} />
+        )}
+        {this.state.pageName === "events" && (
+          <Events
+            groupName={this.props.groupName}
+            userName={this.props.userName}
+          />
+        )}
+        {this.state.pageName === "watching" && (
+          <Watching
+            groupName={this.props.groupName}
+            userName={this.props.userName}
+          />
+        )}
       </div>
     );
   }

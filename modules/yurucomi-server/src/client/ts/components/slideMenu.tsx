@@ -1,5 +1,7 @@
 import React from "react";
-type Props = {};
+type Props = {
+  changePage: (pageName: string) => void;
+};
 type State = {};
 
 const here: string = location.protocol + "//" + location.host;
@@ -21,10 +23,21 @@ class SlideMenu extends React.Component<Props, State> {
   render() {
     return (
       <div className={"slide-menu"}>
-        <div className={"menu-child"} id={"selected"}>
+        <div
+          className={"menu-child"}
+          onClick={e => {
+            this.props.changePage("events");
+          }}
+          id={"selected"}
+        >
           <div className={"menu-title"}>{"Events"}</div>
         </div>
-        <div className={"menu-child"}>
+        <div
+          className={"menu-child"}
+          onClick={e => {
+            this.props.changePage("watching");
+          }}
+        >
           <div className={"menu-title"}>{"Watching"}</div>
         </div>
         <div className={"menu-child"}>

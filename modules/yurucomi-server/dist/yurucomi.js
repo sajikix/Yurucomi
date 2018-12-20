@@ -5,11 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _yurucomiLinda = require("yurucomi-linda");
+var _linda = _interopRequireDefault(require("../linda"));
 
 var _settingUpdater = _interopRequireDefault(require("./settingUpdater"));
 
 var _checkMatchUsers = _interopRequireDefault(require("./checkMatchUsers"));
+
+var _eventEmitter = _interopRequireDefault(require("./eventEmitter"));
+
+var _getUserIcon = _interopRequireDefault(require("./getUserIcon"));
+
+var _mergeLocalSettingsData = _interopRequireDefault(require("./mergeLocalSettingsData"));
 
 var _debug2 = _interopRequireDefault(require("debug"));
 
@@ -40,8 +46,13 @@ function () {
     _defineProperty(this, "linda", void 0);
 
     this.io = io;
-    this.linda = new _yurucomiLinda.Linda();
+    this.linda = new _linda.default();
   }
+  /*
+  connct関数を作りたい
+  lindaとyurucomiの各メソッドを繋げる
+  */
+
 
   _createClass(Yurucomi, [{
     key: "watch",
@@ -61,9 +72,18 @@ function () {
   }, {
     key: "write",
     value: function write(writeOperation, callback) {
-      this.linda.tupleSpace(writeOperation.tsName).write(writeOperation, function (res) {
-        callback(res);
-      });
+      this.linda.tupleSpace(writeOperation.tsName).write(writeOperation,
+      /*#__PURE__*/
+      function () {
+        var _ref2 = _asyncToGenerator(function* (res) {
+          (0, _settingUpdater.default)(res);
+          callback(res);
+        });
+
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
     }
   }, {
     key: "read",
@@ -89,25 +109,38 @@ function () {
             socket.emit("_write_response", resData);
           });
         });
+        socket.on("_local_settings", function (data) {
+          console.log("data", data);
+          (0, _mergeLocalSettingsData.default)(data);
+        });
         socket.on("_watch_operation", function (data) {
-          _this.watch(data,
+          var lindaWtachOperation = Object.assign(data, {
+            payload: {}
+          });
+
+          _eventEmitter.default.on("setting_updated", function (settings) {
+            if (settings.who === socket.request.session.userName) {
+              socket.emit("_setting_update", settings);
+            }
+          });
+
+          _this.watch(lindaWtachOperation,
           /*#__PURE__*/
           function () {
-            var _ref2 = _asyncToGenerator(function* (resData) {
-              if (resData._from === socket.request.session.userName) {
-                var newSettingsData = yield (0, _settingUpdater.default)(resData);
-                socket.emit("_settings_update", newSettingsData);
-              } else {
-                var matchedUsers = yield (0, _checkMatchUsers.default)(resData);
+            var _ref3 = _asyncToGenerator(function* (resData) {
+              var icon = yield (0, _getUserIcon.default)(resData._where, resData._from);
+              var returnData = Object.assign(resData, {
+                _fromIcon: icon
+              });
+              var matchedUsers = yield (0, _checkMatchUsers.default)(resData);
 
-                if (matchedUsers.includes(socket.request.session.userName)) {
-                  socket.emit("_new_events", resData);
-                }
+              if (matchedUsers.includes(socket.request.session.userName)) {
+                socket.emit("_new_event", returnData);
               }
             });
 
-            return function (_x2) {
-              return _ref2.apply(this, arguments);
+            return function (_x3) {
+              return _ref3.apply(this, arguments);
             };
           }());
         });

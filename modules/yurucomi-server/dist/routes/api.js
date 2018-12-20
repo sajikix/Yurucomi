@@ -11,7 +11,7 @@ var _debug2 = _interopRequireDefault(require("debug"));
 
 var _index = _interopRequireDefault(require("../index"));
 
-var _yurucomiLinda = require("yurucomi-linda");
+var _memoryDB = _interopRequireDefault(require("../../linda/db/memoryDB"));
 
 var _userSettings = _interopRequireDefault(require("../userSettings"));
 
@@ -47,13 +47,13 @@ function () {
       case "write":
         var from = null;
 
+        if (req.session && req.session.userName) {
+          from = req.session.userName;
+        }
+
         if (req.query._from) {
           from = req.query._from;
           delete req.query._from;
-        }
-
-        if (req.session && req.session.userName) {
-          from = req.session.userName;
         }
 
         if (from) {
@@ -65,13 +65,13 @@ function () {
             res.send(Data);
           });
         } else {
-          res.send("error: no from info");
+          res.send("error: no _from info");
         }
 
         break;
 
       case "db":
-        res.send(_yurucomiLinda.memoryDB[req.params.tupleSpaceName]);
+        res.send(_memoryDB.default[req.params.tupleSpaceName]);
         break;
 
       case "settings":

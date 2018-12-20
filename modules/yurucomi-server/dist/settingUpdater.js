@@ -7,6 +7,8 @@ exports.default = void 0;
 
 var _userSettings = _interopRequireDefault(require("./userSettings"));
 
+var _eventEmitter = _interopRequireDefault(require("./eventEmitter"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -88,6 +90,13 @@ function () {
     }
 
     _userSettings.default[data._where][data._from] = settings;
+
+    _eventEmitter.default.emit("setting_updated", {
+      where: data._where,
+      who: data._from,
+      settings: _userSettings.default[data._where][data._from]
+    });
+
     return _defineProperty({}, data._where, settings);
   });
 

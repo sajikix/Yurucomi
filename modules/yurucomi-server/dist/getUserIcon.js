@@ -3,41 +3,35 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getUserProps = exports.default = void 0;
+exports.default = void 0;
+
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-// type UserSettings = {
-//   [TupleSpaceName: string]: {
-//     [UserName: string]: {
-//       [PropsName: string]: Array<{ value: any; date: number }>;
-//     };
-//   };
-// };
-var userSettings = {};
-
-var getUserProps =
+var getUserIcon =
 /*#__PURE__*/
 function () {
   var _ref = _asyncToGenerator(function* (tsName, userName) {
-    if (!userSettings[tsName]) {
-      userSettings[tsName] = {};
-      userSettings[tsName][userName] = {};
-    } else if (!userSettings[tsName][userName]) {
-      userSettings[tsName][userName] = {};
-    }
+    var url = "https://scrapbox.io/api/pages/yurucomi/".concat(encodeURI(userName));
 
-    return userSettings[tsName][userName];
+    try {
+      var response = yield _axios.default.get(url);
+      return response.data.image;
+    } catch (e) {
+      return "./images/unknown.png";
+    }
   });
 
-  return function getUserProps(_x, _x2) {
+  return function getUserIcon(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
 
-exports.getUserProps = getUserProps;
-var _default = userSettings;
+var _default = getUserIcon;
 exports.default = _default;
-//# sourceMappingURL=userSettings.js.map
+//# sourceMappingURL=getUserIcon.js.map
