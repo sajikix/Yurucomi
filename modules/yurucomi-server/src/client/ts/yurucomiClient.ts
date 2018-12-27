@@ -22,14 +22,41 @@ export default class EventWatcher {
       tsName: tupleSpaceName,
       from: userName,
     });
+    const updateTime: number = Number(localStorage.getItem("lastUpdate"));
+    if (updateTime > 0 && updateTime < Date.now()) {
+      this.socket.emit("_get_tmp_data", {
+        tsName: tupleSpaceName,
+        from: userName,
+        lastUpdate: updateTime,
+      });
+    }
     this.socket.on("_setting_update", (settings: any) => {
       localStorage.setItem(tupleSpaceName, JSON.stringify(settings.settings));
     });
+    this.socket.on("_tmp_data", (data: any) => {
+      console.log("tmp", data);
+      const localData =
+        localStorage.getItem(`${tupleSpaceName}TmpData`) || "[]";
+      const oldData = JSON.parse(localData);
+      const newData = [...oldData, ...data];
+      localStorage.setItem(`${tupleSpaceName}TmpData`, JSON.stringify(newData));
+      localStorage.setItem("lastUpdate", String(Date.now()));
+    });
+  }
+
+  disconnect() {
+    console.log("close");
+    this.socket.close();
   }
 
   watch(callback: (event: any) => void) {
     this.socket.on("_new_event", (event: any) => {
       callback(event);
+    });
+  }
+  getTmpData(callback: (data: any) => void) {
+    this.socket.on("_tmp_data", (data: any) => {
+      callback(data);
     });
   }
 }

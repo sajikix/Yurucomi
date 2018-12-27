@@ -1,4 +1,4 @@
-import Linda from "../linda";
+import Linda, { linda } from "../linda";
 import {
   WatchResponseTuple,
   LindaReadOperation,
@@ -13,6 +13,7 @@ import checkMatchUsers from "./checkMatchUsers";
 import emitter from "./utils/eventEmitter";
 import getUserIcon from "./utils/getUserIcon";
 import setDBSettings from "./setDBSettings";
+import { setTmpData, getTmpData } from "./tmpData";
 import _debug from "debug";
 const debug = _debug("linda-connector");
 
@@ -21,7 +22,7 @@ export default class Yurucomi {
   linda: Linda;
   constructor(io: SocketIO.Server) {
     this.io = io;
-    this.linda = new Linda();
+    this.linda = linda;
   }
   /*
   connct関数を作りたい
@@ -57,7 +58,7 @@ export default class Yurucomi {
     });
   }
   listen() {
-    this.io.on("connection", (socket: SocketIO.Socket) => {
+    this.io.sockets.on("connection", (socket: SocketIO.Socket) => {
       debug("linda listenning");
       socket.on("_read_operation", (data: LindaReadOperation) => {
         this.read(data, (resData: ResponseTuple) => {
@@ -68,6 +69,14 @@ export default class Yurucomi {
         this.write(data, (resData: InsertData) => {
           socket.emit("_write_response", resData);
         });
+      });
+      socket.on("_get_tmp_data", async (data: any) => {
+        const tmpData = await getTmpData(
+          data.tsName,
+          data.from,
+          data.lastUpdate
+        );
+        socket.emit("_tmp_data", tmpData);
       });
       socket.on("_connected", async data => {
         const userData = await setDBSettings(data.tsName, data.userName);
@@ -81,11 +90,18 @@ export default class Yurucomi {
           }
         });
         this.watch(lindaWtachOperation, async (resData: WatchResponseTuple) => {
-          const icon: string = await getUserIcon(resData._where, resData._from);
-          const returnData = Object.assign(resData, { _fromIcon: icon });
+          console.log("watching");
           const matchedUsers: Array<string> = await checkMatchUsers(resData);
-          if (matchedUsers.includes(socket.request.session.userName)) {
-            socket.emit("_new_event", returnData);
+          if (matchedUsers.length > 0) {
+            const icon: string = await getUserIcon(
+              resData._where,
+              resData._from
+            );
+            const returnData = Object.assign(resData, { _fromIcon: icon });
+            await setTmpData(matchedUsers, returnData);
+            if (matchedUsers.includes(socket.request.session.userName)) {
+              socket.emit("_new_event", returnData);
+            }
           }
         });
       });

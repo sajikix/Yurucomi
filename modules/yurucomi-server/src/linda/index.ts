@@ -13,6 +13,11 @@ export default class Linda {
     if (!this.tupleSpaces[tupleSpaceName]) {
       this.tupleSpaces[tupleSpaceName] = new tupleSpace(tupleSpaceName);
     }
+    console.log(this.tupleSpaces);
     return this.tupleSpaces[tupleSpaceName];
   }
 }
+
+const linda = new Linda();
+
+export { linda };

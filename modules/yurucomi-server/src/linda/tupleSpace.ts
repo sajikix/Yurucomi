@@ -59,9 +59,7 @@ export default class tupleSpace {
       }
     }
     const resData: InsertData = await this.storage.insert(insertData);
-    // this.emitter.emit("_writeData", writeOperationData);
-    await this.emitter.emit("_writeData", insertData);
-
+    this.emitter.emit("_writeData", insertData);
     callback(resData);
   }
 

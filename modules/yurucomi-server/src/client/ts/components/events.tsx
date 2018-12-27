@@ -20,17 +20,40 @@ type EventInfo = {
 
 export default class Events extends React.Component<Props, State> {
   socket: SocketIOClient.Socket;
+  yurucomiClient: YurucomiClient;
   constructor(props: Props) {
     super(props);
     this.socket = io(location.origin);
+    this.yurucomiClient = new YurucomiClient();
     this.state = { eventList: [], reconnecting: false };
     this.connect = this.connect.bind(this);
   }
 
   connect() {
-    const yurucomiClient = new YurucomiClient();
-    yurucomiClient.listen(this.props.groupName, this.props.userName);
-    yurucomiClient.watch(event => {
+    // const yurucomiClient = new YurucomiClient();
+    this.yurucomiClient.listen(this.props.groupName, this.props.userName);
+    this.yurucomiClient.getTmpData(data => {
+      const newTmpData = data
+        .slice()
+        .sort((a, b) => {
+          return b.time - a.time;
+        })
+        .map(ele => {
+          return { from: ele.from, tuple: ele.tuple, fromImage: ele.icon };
+        });
+      const localData = JSON.parse(
+        localStorage.getItem(`${this.props.groupName}TmpData`)
+      )
+        .sort((a, b) => {
+          return b.time - a.time;
+        })
+        .map(ele => {
+          return { from: ele.from, tuple: ele.tuple, fromImage: ele.icon };
+        });
+      const newList = [...newTmpData, ...localData, ...this.state.eventList];
+      this.setState({ eventList: newList });
+    });
+    this.yurucomiClient.watch(event => {
       const newList = [
         {
           from: event._from,
@@ -45,6 +68,10 @@ export default class Events extends React.Component<Props, State> {
 
   componentDidMount() {
     this.connect();
+  }
+
+  componentWillUnmount() {
+    this.yurucomiClient.disconnect();
   }
 
   render() {
