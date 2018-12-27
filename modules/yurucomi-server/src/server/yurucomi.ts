@@ -80,7 +80,9 @@ export default class Yurucomi {
       });
       socket.on("_connected", async data => {
         const userData = await setDBSettings(data.tsName, data.userName);
-        socket.emit("_setting_update", { settings: userData });
+        socket.emit("_setting_update", {
+          settings: userData,
+        });
       });
       socket.on("_watch_operation", (data: YurucomiWatchOperation) => {
         const lindaWtachOperation = Object.assign(data, { payload: {} });
@@ -90,7 +92,6 @@ export default class Yurucomi {
           }
         });
         this.watch(lindaWtachOperation, async (resData: WatchResponseTuple) => {
-          console.log("watching");
           const matchedUsers: Array<string> = await checkMatchUsers(resData);
           if (matchedUsers.length > 0) {
             const icon: string = await getUserIcon(
