@@ -4,14 +4,15 @@
   "version": "0.0.1",
   "private": false,
   "scripts": {
-    "start": "node dist/index.js",
-    "start:dev": "DEBUG=server:*,nodemon:* NODE_ENV=development nodemon src/server/index.ts --exec babel-node --watch src --watch public --extensions '.ts'",
+    "start": "node dist/server/index.js",
+    "start:dev": "DEBUG=server:*,nodemon:* NODE_ENV=development nodemon dist/server/index.js --watch",
     "build": "npm run build-server && npm run build-webpack",
-    "build-server": "npm run build-server:clean && npm run build-server:babel",
+    "build-server": "npm run build-server:clean && npm run build-server:tsc",
     "build-server:clean": "rm -rf dist && mkdir -p dist",
-    "build-server:babel": "../../node_modules/.bin/babel src/server --out-dir dist --source-maps --extensions '.ts'",
+    "build-server:tsc": "tsc --outDir ./dist",
+    "build-server:watch": "tsc --watch --outDir ./dist",
     "build-webpack": "webpack -p --progress --config webpack.config.js",
-    "build-webpack-watch": "webpack -p --progress --watch --config webpack.config.js",
+    "build-webpack-watch": "webpack --progress --watch",
     "type-check": "../../node_modules/.bin/tsc --noEmit",
     "test": "echo no test"
   },
@@ -71,7 +72,8 @@
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
     "style-loader": "^0.23.1",
-    "yurucomi-interfaces": "^0.0.1"
+    "yurucomi-interfaces": "^0.0.1",
+    "linda-client": "*"
   },
   "engines": {
     "node": "10.14.0"

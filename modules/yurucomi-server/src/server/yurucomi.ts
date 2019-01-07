@@ -1,75 +1,92 @@
 import Linda, { linda } from "../linda";
+
 import {
-  WatchResponseTuple,
-  LindaReadOperation,
-  LindaWriteOperation,
-  LindaWatchOperation,
-  InsertData,
-  ResponseTuple,
-} from "../linda/interfaces";
-import { YurucomiWatchOperation, SettingUpdateData } from "yurucomi-interfaces";
-import settingsUpdater from "./settingUpdater";
+  YurucomiWatchOperation,
+  LindaOperation,
+  LindaResponse,
+  Tuple,
+} from "yurucomi-interfaces";
+import settingUpdater from "./settingUpdater";
+import { getUserProps, setUserPropsFromDB } from "./userSettings";
 import checkMatchUsers from "./checkMatchUsers";
 import emitter from "./utils/eventEmitter";
 import getUserIcon from "./utils/getUserIcon";
-import setDBSettings from "./setDBSettings";
 import { setTmpData, getTmpData } from "./tmpData";
+import lindaClient from "linda-client";
 import _debug from "debug";
 const debug = _debug("linda-connector");
 
 export default class Yurucomi {
   io: SocketIO.Server;
   linda: Linda;
+  lindaClient: lindaClient;
   constructor(io: SocketIO.Server) {
     this.io = io;
-    this.linda = linda;
+    // this.linda = linda;
+    this.lindaClient = new lindaClient();
   }
   /*
   connct関数を作りたい
   lindaとyurucomiの各メソッドを繋げる
   */
-  watch(
-    watchOperation: LindaWatchOperation,
-    callback: (res: WatchResponseTuple) => void
-  ) {
-    this.linda
-      .tupleSpace(watchOperation.tsName)
-      .watch(watchOperation, async res => {
-        callback(res);
-      });
+
+  async connect(tsName: string) {
+    await this.lindaClient.connect(
+      // "https://new-linda.herokuapp.com",
+      "http://localhost:7777",
+      tsName
+    );
   }
-  write(
-    writeOperation: LindaWriteOperation,
-    callback: (res: InsertData) => void
-  ) {
-    this.linda
-      .tupleSpace(writeOperation.tsName)
-      .write(writeOperation, async res => {
-        settingsUpdater(res);
-        callback(res);
-      });
+
+  private async write(tuple: Tuple) {
+    const resData = await this.lindaClient.write(tuple);
+    return resData;
   }
-  read(
-    readOperation: LindaReadOperation,
-    callback: (res: ResponseTuple) => void
-  ) {
-    this.linda.tupleSpace(readOperation.tsName).read(readOperation, res => {
+  private watch(tuple: Tuple, callback: (res: LindaResponse) => void) {
+    this.lindaClient.watch(tuple, async res => {
+      if (!res._from && res._payload._from) {
+        res._from = res._payload._from;
+      }
       callback(res);
     });
   }
   listen() {
     this.io.sockets.on("connection", (socket: SocketIO.Socket) => {
-      debug("linda listenning");
-      socket.on("_read_operation", (data: LindaReadOperation) => {
-        this.read(data, (resData: ResponseTuple) => {
-          socket.emit("_read_response", resData);
+      debug("yurucomi listenning");
+
+      socket.on("_write_operation", async (data: LindaOperation) => {
+        const resData = await this.write(data);
+        socket.emit("_write_response", resData);
+      });
+
+      socket.on("_watch_operation", (tuple: Tuple) => {
+        emitter.on("setting_updated", settings => {
+          if (settings.who === socket.request.session.userName) {
+            socket.emit("_setting_update", settings);
+          }
+        });
+        this.watch(tuple, async (resData: LindaResponse) => {
+          if (resData._from) {
+            await settingUpdater(resData);
+            const matchedUsers: Array<string> = await checkMatchUsers(resData);
+            console.log("matched", matchedUsers);
+            if (matchedUsers.length > 0) {
+              const icon: string = await getUserIcon(
+                resData._where,
+                resData._from
+              );
+              const returnData = Object.assign(resData, {
+                _fromIcon: icon,
+              });
+              await setTmpData(matchedUsers, resData._id, returnData);
+              if (matchedUsers.includes(socket.request.session.userName)) {
+                socket.emit("_new_event", returnData);
+              }
+            }
+          }
         });
       });
-      socket.on("_write_operation", (data: LindaWriteOperation) => {
-        this.write(data, (resData: InsertData) => {
-          socket.emit("_write_response", resData);
-        });
-      });
+
       socket.on("_get_tmp_data", async (data: any) => {
         const tmpData = await getTmpData(
           data.tsName,
@@ -78,32 +95,14 @@ export default class Yurucomi {
         );
         socket.emit("_tmp_data", tmpData);
       });
+
       socket.on("_connected", async data => {
-        const userData = await setDBSettings(data.tsName, data.userName);
+        //tupleSpaceを指定
+        await this.connect(data.tsName);
+        await setUserPropsFromDB(data.tsName);
+        const userData = getUserProps(data.tsName, data.userName);
         socket.emit("_setting_update", {
           settings: userData,
-        });
-      });
-      socket.on("_watch_operation", (data: YurucomiWatchOperation) => {
-        const lindaWtachOperation = Object.assign(data, { payload: {} });
-        emitter.on("setting_updated", settings => {
-          if (settings.who === socket.request.session.userName) {
-            socket.emit("_setting_update", settings);
-          }
-        });
-        this.watch(lindaWtachOperation, async (resData: WatchResponseTuple) => {
-          const matchedUsers: Array<string> = await checkMatchUsers(resData);
-          if (matchedUsers.length > 0) {
-            const icon: string = await getUserIcon(
-              resData._where,
-              resData._from
-            );
-            const returnData = Object.assign(resData, { _fromIcon: icon });
-            await setTmpData(matchedUsers, returnData);
-            if (matchedUsers.includes(socket.request.session.userName)) {
-              socket.emit("_new_event", returnData);
-            }
-          }
         });
       });
     });

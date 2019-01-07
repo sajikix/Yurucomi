@@ -1,9 +1,9 @@
-import { InsertData } from "../linda/interfaces";
 import userSettings from "./userSettings";
 import emitter from "./utils/eventEmitter";
 import collection from "./utils/mongodb";
+import { LindaResponse } from "yurucomi-interfaces";
 
-const updater = async (data: InsertData) => {
+const updater = async (data: LindaResponse) => {
   if (data._from === undefined) {
     data._from = "_unkown";
   }

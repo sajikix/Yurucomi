@@ -1,6 +1,19 @@
 import { Settings } from "yurucomi-interfaces";
+import collection from "./utils/mongodb";
 
 const userSettings: Settings = {};
+
+const setUserPropsFromDB = async (tsName: string) => {
+  const userDataArray = await collection(tsName)
+    .find()
+    .toArray();
+  userDataArray.map(async ele => {
+    const userName = ele._from;
+    delete ele._from;
+    delete ele._id;
+    await setUserProps(tsName, userName, ele);
+  });
+};
 
 const getUserProps = async (tsName: string, userName: string) => {
   if (!userSettings[tsName]) {
@@ -23,4 +36,4 @@ const setUserProps = async (tsName: string, userName: string, data: any) => {
 };
 
 export default userSettings;
-export { getUserProps, setUserProps };
+export { getUserProps, setUserProps, setUserPropsFromDB };

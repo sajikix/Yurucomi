@@ -1,8 +1,9 @@
 import settings from "./userSettings";
 import Asearch from "asearch";
 import { InsertData } from "../linda/interfaces";
+import { LindaResponse } from "yurucomi-interfaces";
 
-const checkMatchUsers = async (data: InsertData) => {
+const checkMatchUsers = async (data: LindaResponse) => {
   // evet発火を制御する部分
   const Users: Array<string> = [];
   for (let user in settings[data._where]) {
@@ -19,6 +20,7 @@ const checkMatchUsers = async (data: InsertData) => {
       }
     }
   }
+  console.log(Users);
   return Users;
 };
 

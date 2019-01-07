@@ -1,40 +1,22 @@
-export type ResponseData = {
-  _from: string;
+import { ObjectId } from "bson";
+
+export interface ConnectCallback {
+  (): void;
+}
+
+export interface Callback {
+  (resData: ResponseTuple): void;
+}
+
+export type ResponseTuple = {
+  _isMuched: boolean;
   _time: number;
-  _to?: string;
-  _with?: Array<string>;
-  _which?: Tuple;
-  [key: string]: any;
+  _from: string;
+  _id: ObjectId;
+  _payload: Object;
 };
 
-export type YurucomiWatchOperation = {
-  tsName: string;
-  from: string;
-};
-
-export type Settings = {
-  [tsNamw: string]: {
-    [userName: string]: Setting;
-  };
-};
-
-export type Setting = {
-  [propName: string]: Array<{ value: any; date: number }>;
-};
-
-export type SettingUpdateData = {
-  tsName: string;
-  userName: string;
-  settings: Settings;
-};
-
-export type YurucomiOperation = {
-  tsName: string;
-  payload: Tuple;
-  from?: string;
-};
-
-// linda-interfaces
+////
 export type LindaOperation = {
   _payload: Tuple;
   _where: string;
