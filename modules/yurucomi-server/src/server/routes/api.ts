@@ -1,17 +1,13 @@
 import * as express from "express";
 const router: express.Router = express.Router();
 import { Tuple, LindaResponse } from "yurucomi-interfaces";
-import { ResponseTuple, LindaOperation } from "../../linda/interfaces";
 import _debug from "debug";
 import app from "../index";
 import LindaClient from "linda-client";
 
 //debug用
-import memoryDB from "../../linda/db/memoryDB";
 import userSettings from "../userSettings";
 import Yurucomi from "../yurucomi";
-import tupleSpace from "../../linda/tupleSpace";
-import { write } from "fs";
 
 const debug = _debug("server:router");
 const lindaClient = new LindaClient();
@@ -51,9 +47,6 @@ router.get(
           res.send("error: no _from info");
         }
 
-        break;
-      case "db":
-        res.send(memoryDB[req.params.tupleSpaceName]);
         break;
       case "settings":
         res.send(userSettings[req.params.tupleSpaceName]);

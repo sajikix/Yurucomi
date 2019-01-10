@@ -1,6 +1,5 @@
 import settings from "./userSettings";
 import Asearch from "asearch";
-import { InsertData } from "../linda/interfaces";
 import { LindaResponse } from "yurucomi-interfaces";
 
 const checkMatchUsers = async (data: LindaResponse) => {

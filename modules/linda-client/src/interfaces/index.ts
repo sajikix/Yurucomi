@@ -5,7 +5,7 @@ export interface ConnectCallback {
 }
 
 export interface Callback {
-  (resData: ResponseTuple): void;
+  (resData: LindaResponse): void;
 }
 
 export type ResponseTuple = {

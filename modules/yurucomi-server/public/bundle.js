@@ -38562,7 +38562,11 @@ class EventWatcher {
             tsName: tupleSpaceName,
             userName: userName,
         });
-        this.socket.emit("_watch_operation", {});
+        this.socket.emit("_watch_operation", {
+            _payload: {},
+            _where: tupleSpaceName,
+            _type: "watch",
+        });
         const updateTime = Number(localStorage.getItem("lastUpdate"));
         if (updateTime > 0 && updateTime < Date.now()) {
             this.socket.emit("_get_tmp_data", {
