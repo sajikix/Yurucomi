@@ -65,18 +65,16 @@ export default class Yurucomi {
       });
 
       socket.on("_get_tmp_data", async (data: any) => {
-        const tmpData = await getTmpData(
-          data.tsName,
-          data.from,
-          data.lastUpdate
-        );
+        const userName = socket.request.session.userName || data.from;
+        const tmpData = await getTmpData(data.tsName, userName);
         socket.emit("_tmp_data", tmpData);
       });
 
       socket.on("_connected", async data => {
         //tupleSpaceを指定
         await setUserPropsFromDB(data.tsName);
-        const userData = getUserProps(data.tsName, data.userName);
+        const userData = await getUserProps(data.tsName, data.userName);
+        console.log("userData", userData);
         socket.emit("_setting_update", {
           settings: userData,
         });

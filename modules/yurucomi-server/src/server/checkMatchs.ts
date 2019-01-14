@@ -4,7 +4,11 @@ const checkMatch = (
   data: LindaResponse,
   callback: (users: Array<string>) => Promise<void>
 ) => {
+  console.log(data);
   const matchedUsers = Object.entries(userSettings[data._where])
+    .filter(userData => {
+      return userData[0] !== data._from;
+    })
     .filter(userData => {
       return (
         Object.entries(userData[1])
@@ -26,7 +30,6 @@ const checkMatch = (
   if (matchedUsers.length > 0) {
     callback(matchedUsers);
   }
-  console.log("ele", matchedUsers);
 };
 
 export default checkMatch;

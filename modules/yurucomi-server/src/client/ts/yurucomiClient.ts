@@ -1,19 +1,30 @@
 import io from "socket.io-client";
+import { YurucomiEvent, TmpDataArray } from "yurucomi-interfaces";
+import {
+  setEventToLocalData,
+  setWatchingtoLocalData,
+} from "./utils/localStorage";
 const options = {
   reconnectionDelay: 5000,
   transports: ["websocket"],
 };
 
 export default class EventWatcher {
+  yurucomiSpaceName: string;
+  userName: string;
   socket: SocketIOClient.Socket;
   propsSettings: { [PropsName: string]: Array<{ value: any; date: number }> };
   constructor() {
     this.socket = io(location.origin, options);
     this.propsSettings = {};
+    this.yurucomiSpaceName = "";
+    this.userName = "";
     this.listen = this.listen.bind(this);
   }
 
   listen(tupleSpaceName: string, userName: string) {
+    this.yurucomiSpaceName = tupleSpaceName;
+    this.userName = userName;
     this.socket.emit("_connected", {
       tsName: tupleSpaceName,
       userName: userName,
@@ -23,25 +34,10 @@ export default class EventWatcher {
       _where: tupleSpaceName,
       _type: "watch",
     });
-    const updateTime: number = Number(localStorage.getItem("lastUpdate"));
-    if (updateTime > 0 && updateTime < Date.now()) {
-      this.socket.emit("_get_tmp_data", {
-        tsName: tupleSpaceName,
-        from: userName,
-        lastUpdate: updateTime,
-      });
-    }
+
     this.socket.on("_setting_update", (settings: any) => {
-      localStorage.setItem(tupleSpaceName, JSON.stringify(settings.settings));
-    });
-    this.socket.on("_tmp_data", (data: any) => {
-      console.log("tmp", data);
-      const localData =
-        localStorage.getItem(`${tupleSpaceName}TmpData`) || "[]";
-      const oldData = JSON.parse(localData);
-      const newData = [...oldData, ...data];
-      localStorage.setItem(`${tupleSpaceName}TmpData`, JSON.stringify(newData));
-      localStorage.setItem("lastUpdate", String(Date.now()));
+      console.log(settings);
+      setWatchingtoLocalData(this.yurucomiSpaceName, settings);
     });
   }
 
@@ -51,13 +47,19 @@ export default class EventWatcher {
   }
 
   watch(callback: (event: any) => void) {
-    this.socket.on("_new_event", (event: any) => {
+    this.socket.on("_new_event", (event: YurucomiEvent) => {
+      setEventToLocalData(event);
       callback(event);
     });
   }
-  getTmpData(callback: (data: any) => void) {
-    this.socket.on("_tmp_data", (data: any) => {
-      callback(data);
+  getTmpData(callback: (data: Array<YurucomiEvent>) => void) {
+    this.socket.on("_tmp_data", (data: TmpDataArray) => {
+      const validatedData = data.map(ele => ele.eventData);
+      callback(validatedData);
+    });
+    this.socket.emit("_get_tmp_data", {
+      tsName: this.yurucomiSpaceName,
+      from: this.userName,
     });
   }
 }

@@ -22,9 +22,12 @@ export default class YurucomiSpace {
     this.lindaClient.write(tuple);
   }
   watch() {
-    console.log(this.tupleSpaceName, "watching");
     this.lindaClient.watch({}, (resData: LindaResponse) => {
-      console.log(this.tupleSpaceName, resData);
+      console.log(resData);
+      if (resData._payload._from) {
+        resData._from = String(resData._payload._from);
+        delete resData._payload._from;
+      }
       if (resData._from) {
         settingUpdater(resData);
         checkMatch(resData, async users => {
@@ -38,7 +41,7 @@ export default class YurucomiSpace {
               _fromIcon: icon,
               _matchedUsers: users,
             });
-            setTmpData(users, resData._id, returnData);
+            setTmpData(users, returnData);
             emitter.emit("_event", returnData);
           }
         });

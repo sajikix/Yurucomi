@@ -1,3 +1,5 @@
+import { getTmpData } from "../../yurucomi-server/src/server/tmpData";
+
 export type Settings = {
   [tsNamw: string]: {
     [userName: string]: Setting;
@@ -20,9 +22,16 @@ export type YurucomiEvent = {
   _time: number;
   _id?: number | any;
   _isMuched?: boolean;
-  _from: string;
+  _from?: string;
   _fromIcon: string;
   _matchedUsers: Array<string>;
+};
+
+export type TmpDataArray = Array<TmpData>;
+
+export type TmpData = {
+  name: string;
+  eventData: YurucomiEvent;
 };
 
 // linda-interfaces

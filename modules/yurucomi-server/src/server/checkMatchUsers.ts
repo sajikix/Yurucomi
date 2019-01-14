@@ -3,7 +3,7 @@ import Asearch from "asearch";
 import { LindaResponse } from "yurucomi-interfaces";
 
 const checkMatchUsers = async (data: LindaResponse) => {
-  // evet発火を制御する部分
+  // event発火を制御する部分
   const Users: Array<string> = [];
   for (let user in settings[data._where]) {
     for (let prop in data._payload) {

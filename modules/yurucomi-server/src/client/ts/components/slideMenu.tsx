@@ -1,6 +1,8 @@
 import React from "react";
+import styled from "styled-components";
 type Props = {
   changePage: (pageName: string) => void;
+  pageName: string;
 };
 type State = {};
 
@@ -23,49 +25,85 @@ class SlideMenu extends React.Component<Props, State> {
   render() {
     return (
       <div className={"slide-menu"}>
-        <div
-          className={"menu-child"}
+        <MenuChild
           onClick={e => {
             this.props.changePage("events");
           }}
-          id={"selected"}
+          selected={
+            this.props.pageName == "events" ||
+            this.props.pageName == "eventDetail"
+          }
         >
-          <div className={"menu-title"}>{"Events"}</div>
-        </div>
-        <div
-          className={"menu-child"}
+          <MenuTitle>{"Events"}</MenuTitle>
+        </MenuChild>
+        <MenuChild
+          selected={this.props.pageName == "watching"}
           onClick={e => {
             this.props.changePage("watching");
           }}
         >
-          <div className={"menu-title"}>{"Watching"}</div>
-        </div>
-        <div className={"menu-child"}>
-          <div className={"menu-title"}>{"Members"}</div>
-        </div>
-        <div className={"empty"}>
-          <div className={"empty-text"}>{""}</div>
-        </div>
-
-        <div
-          className={"menu-child"}
+          <MenuTitle>{"Watching"}</MenuTitle>
+        </MenuChild>
+        <MenuChild selected={this.props.pageName == "members"}>
+          <MenuTitle>{"Members"}</MenuTitle>
+        </MenuChild>
+        <Empty />
+        <MenuChild
+          selected={this.props.pageName == "top"}
           onClick={() => {
             window.location.href = location.origin;
           }}
         >
-          <div className={"menu-title"}>{"Top"}</div>
-        </div>
-        <div
-          className={"menu-child"}
+          <MenuTitle>{"Top"}</MenuTitle>
+        </MenuChild>
+        <MenuChild
+          selected={this.props.pageName == "logout"}
           onClick={() => {
             this.logout();
           }}
         >
-          <div className={"menu-title"}>{"Logout"}</div>
-        </div>
+          <MenuTitle>{"Logout"}</MenuTitle>
+        </MenuChild>
       </div>
     );
   }
 }
+
+const Empty = styled.div`
+  width: 19vw;
+  background-color: rgba(255, 255, 255, 0);
+  height: 5vh;
+  border-radius: 0 2vh 2vh 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3vh;
+`;
+
+const MenuChild = styled.div<{
+  selected: boolean;
+}>`
+  width: 19vw;
+  background-color: ${props =>
+    props.selected ? "rgb(256, 230, 230);" : "white"};
+  color: ${props =>
+    props.selected ? "rgba(234, 0, 0, 1)" : "rgba(118, 118, 118, 1)"};
+  height: 5vh;
+  border-radius: 0 2vh 2vh 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3vh;
+  :hover {
+    background-color: ${props =>
+      props.selected ? "rgb(255, 230, 230)" : "rgb(236, 239, 242)"};
+  }
+`;
+
+const MenuTitle = styled.div`
+  font-size: 3vh;
+`;
 
 export default SlideMenu;
