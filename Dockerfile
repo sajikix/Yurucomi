@@ -13,6 +13,8 @@ RUN npm install
 
 COPY /modules/yurucomi-interfaces ./modules/yurucomi-interfaces
 COPY /modules/yurucomi-server ./modules/yurucomi-server
+COPY /modules/linda-client ./modules/linda-client
+
 
 ENV NODE_ENV=development
 

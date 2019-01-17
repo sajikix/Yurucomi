@@ -12,8 +12,7 @@ export default class YurucomiSpace {
   constructor(tsName: string) {
     this.lindaClient = new LindaClient();
     this.lindaClient.connect(
-      // "https://new-linda.herokuapp.com",
-      "http://localhost:7777",
+      "https://new-linda.herokuapp.com",
       tsName
     );
     this.tupleSpaceName = tsName;

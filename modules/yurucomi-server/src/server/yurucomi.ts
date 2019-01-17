@@ -16,7 +16,6 @@ export default class Yurucomi {
   constructor(io: SocketIO.Server) {
     this.io = io;
     this.yurucomiSpaces = {};
-    this.lindaClient = new lindaClient();
   }
 
   yurucomiSpace(ysName: string) {
