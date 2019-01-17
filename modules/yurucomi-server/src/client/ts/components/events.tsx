@@ -6,7 +6,8 @@ import {
   getEvetsFromLocalData,
 } from "../utils/localStorage";
 import { transfromDate } from "../utils/transformDate";
-import { shortningTuple, showFullTuple } from "../utils/showTuple";
+import { shortningTuple } from "../utils/showTuple";
+import { filter as settingFilter } from "../utils/filterFromLocalSettings";
 import { YurucomiEvent, Tuple } from "yurucomi-interfaces";
 import styled from "styled-components";
 
@@ -82,24 +83,26 @@ export default class Events extends React.Component<Props, State> {
   render() {
     return (
       <div className={"events"}>
-        {this.state.eventList.map((value: YurucomiEvent) => {
-          return (
-            <EventChild
-              tuple={value._payload}
-              showingDetail={this.showingDetail(value._id)}
-              onClick={e => {
-                console.log(value._id);
-                this.props.showEventDetail("eventDetail", value);
-              }}
-            >
-              <FromIconWrapper>
-                <Icon src={value._fromIcon} alt="" />
-              </FromIconWrapper>
-              <Tuple>{shortningTuple(value._payload)}</Tuple>
-              <TimeStamp>{transfromDate(value._time)}</TimeStamp>
-            </EventChild>
-          );
-        })}
+        {this.state.eventList
+          .filter(ele => settingFilter(this.props.groupName, ele._payload))
+          .map((value: YurucomiEvent) => {
+            return (
+              <EventChild
+                tuple={value._payload}
+                showingDetail={this.showingDetail(value._id)}
+                onClick={e => {
+                  console.log(value._id);
+                  this.props.showEventDetail("eventDetail", value);
+                }}
+              >
+                <FromIconWrapper>
+                  <Icon src={value._fromIcon} alt="" />
+                </FromIconWrapper>
+                <Tuple>{shortningTuple(value._payload)}</Tuple>
+                <TimeStamp>{transfromDate(value._time)}</TimeStamp>
+              </EventChild>
+            );
+          })}
       </div>
     );
   }

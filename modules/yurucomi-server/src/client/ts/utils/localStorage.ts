@@ -54,10 +54,57 @@ export const setWatchingtoLocalData = (ysName: string, watchingData: any) => {
       checked: true,
     });
   }
-  localStorage.setItem(ysName, JSON.stringify(dataArray));
+
+  const oldData = JSON.parse(localStorage.getItem(ysName)) || [];
+  const merged = mergeWatchingData(oldData, dataArray);
+  localStorage.setItem(ysName, JSON.stringify(merged));
 };
 
 export const getWatchingFromLocalData = (ysName: string) => {
   const data = JSON.parse(localStorage.getItem(ysName)) || {};
   return data;
+};
+
+type WatchingData = Array<{
+  key: string;
+  values: Array<{ value: any; checked: boolean }>;
+  checked: boolean;
+}>;
+
+const mergeWatchingData = (array1: WatchingData, array2: WatchingData) => {
+  const concatArray = [...array1, ...array2];
+  const mergedArray: WatchingData = [];
+  for (let n of concatArray) {
+    const searchIndex = mergedArray.findIndex(ele => {
+      return ele.key === n.key;
+    });
+    if (searchIndex < 0) {
+      mergedArray.push(n);
+    } else {
+      const concatValueArray = [
+        ...n.values,
+        ...mergedArray[searchIndex].values,
+      ];
+      const mergedValueArray: Array<{ value: any; checked }> = [];
+      for (let nn of concatValueArray) {
+        const searchValueIndex = mergedValueArray.findIndex(ele => {
+          return ele.value === nn.value;
+        });
+        if (searchValueIndex < 0) {
+          mergedValueArray.push(nn);
+        } else {
+          mergedValueArray[searchValueIndex] = {
+            value: nn.value,
+            checked: nn.checked && mergedValueArray[searchValueIndex].checked,
+          };
+        }
+      }
+      mergedArray[searchIndex] = {
+        checked: n.checked && mergedArray[searchIndex].checked,
+        values: mergedValueArray,
+        key: n.key,
+      };
+    }
+  }
+  return mergedArray;
 };
