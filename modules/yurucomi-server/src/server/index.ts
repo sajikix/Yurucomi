@@ -70,7 +70,6 @@ const main = async () => {
   yurucomi.listen();
 
   app.set("yurucomi", yurucomi);
-  app.set("io", io);
 
   server.listen(PORT, async () => {
     debug(`Yurucomi server listen on :${PORT}`);

@@ -3,34 +3,19 @@ const router: express.Router = express.Router();
 import { Tuple, LindaResponse } from "yurucomi-interfaces";
 import _debug from "debug";
 import app from "../index";
-import LindaClient from "linda-client";
 
 //debug用
 import userSettings from "../userSettings";
 import Yurucomi from "../yurucomi";
 
 const debug = _debug("server:router");
-const lindaClient = new LindaClient();
+
 router.get(
   "/:tupleSpaceName/:operation",
   async (req: express.Request, res: express.Response) => {
     const yurucomi: Yurucomi = app.get("yurucomi");
-    await lindaClient.connect(
-      // "https://new-linda.herokuapp.com",
-      "http://localhost:7777",
-      req.params.tupleSpaceName
-    );
+    const ys = yurucomi.yurucomiSpace(req.params.tupleSpaceName);
     switch (req.params.operation) {
-      case "read":
-        // yurucomi.read(
-        //   { tsName: req.params.tupleSpaceName, payload: req.query },
-        //   (data: LindaResponse) => {
-        //     res.send(data);
-        //   }
-        // );
-        const resData = await lindaClient.read(req.query);
-        res.send(resData);
-        break;
       case "write":
         let fromCheck: boolean = false;
         const writeTuple = req.query;
@@ -41,8 +26,8 @@ router.get(
           fromCheck = true;
         }
         if (fromCheck) {
-          const resData = await lindaClient.write(writeTuple);
-          res.send(resData);
+          ys.write(req.query);
+          res.send(req.query);
         } else {
           res.send("error: no _from info");
         }

@@ -9,7 +9,6 @@ const debug = _debug("yurucomi");
 
 export default class Yurucomi {
   io: SocketIO.Server;
-  lindaClient: lindaClient;
   yurucomiSpaces: {
     [ysName: string]: { space: YurucomiSpace; watching: boolean };
   };

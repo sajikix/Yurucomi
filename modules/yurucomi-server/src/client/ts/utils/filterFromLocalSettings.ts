@@ -1,7 +1,7 @@
 import { Tuple } from "yurucomi-interfaces";
 
 export const filter = (ysName: string, tuple: Tuple) => {
-  const localData = JSON.parse(localStorage.getItem(ysName));
+  const localData = JSON.parse(localStorage.getItem(ysName) || "[]");
   let returnData = false;
   localData.forEach(ele => {
     if (tuple.hasOwnProperty(ele.key)) {

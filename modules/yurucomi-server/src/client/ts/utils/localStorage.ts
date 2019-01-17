@@ -2,8 +2,9 @@ import { YurucomiEvent, TmpDataArray } from "yurucomi-interfaces";
 import { json } from "body-parser";
 
 export const setEventToLocalData = (event: YurucomiEvent) => {
-  const oldEvents: Array<YurucomiEvent> =
-    JSON.parse(localStorage.getItem(`${event._where}TmpData`)) || [];
+  const oldEvents: Array<YurucomiEvent> = JSON.parse(
+    localStorage.getItem(`${event._where}TmpData`) || "[]"
+  );
   const newEvents = [event, ...oldEvents];
   localStorage.setItem(`${event._where}TmpData`, JSON.stringify(newEvents));
   localStorage.setItem(`${event._where}LastUpdate`, String(event._time));
@@ -13,10 +14,13 @@ export const setTmpToLocalData = (
   ysName: string,
   tmpData: Array<YurucomiEvent>
 ) => {
-  const lastUpdate = JSON.parse(localStorage.getItem(`${ysName}LastUpdate`));
+  const lastUpdate = JSON.parse(
+    localStorage.getItem(`${ysName}LastUpdate`) || "0"
+  );
   const newEvents = filterTmpData(tmpData, lastUpdate);
-  const oldEvents: Array<YurucomiEvent> =
-    JSON.parse(localStorage.getItem(`${ysName}TmpData`)) || [];
+  const oldEvents: Array<YurucomiEvent> = JSON.parse(
+    localStorage.getItem(`${ysName}TmpData`) || "[]"
+  );
   localStorage.setItem(
     `${ysName}TmpData`,
     JSON.stringify([...newEvents, ...oldEvents])
@@ -39,7 +43,7 @@ const filterTmpData = (data: Array<YurucomiEvent>, lastUpdate: number) => {
 };
 
 export const getEvetsFromLocalData = (ysName: string): Array<YurucomiEvent> => {
-  return JSON.parse(localStorage.getItem(`${ysName}TmpData`)) || [];
+  return JSON.parse(localStorage.getItem(`${ysName}TmpData`) || "[]");
 };
 
 export const setWatchingtoLocalData = (ysName: string, watchingData: any) => {
@@ -55,13 +59,13 @@ export const setWatchingtoLocalData = (ysName: string, watchingData: any) => {
     });
   }
 
-  const oldData = JSON.parse(localStorage.getItem(ysName)) || [];
+  const oldData = JSON.parse(localStorage.getItem(ysName) || "[]");
   const merged = mergeWatchingData(oldData, dataArray);
   localStorage.setItem(ysName, JSON.stringify(merged));
 };
 
 export const getWatchingFromLocalData = (ysName: string) => {
-  const data = JSON.parse(localStorage.getItem(ysName)) || {};
+  const data = JSON.parse(localStorage.getItem(ysName) || "[]");
   return data;
 };
 
@@ -85,7 +89,7 @@ const mergeWatchingData = (array1: WatchingData, array2: WatchingData) => {
         ...n.values,
         ...mergedArray[searchIndex].values,
       ];
-      const mergedValueArray: Array<{ value: any; checked }> = [];
+      const mergedValueArray: Array<{ value: any; checked: boolean }> = [];
       for (let nn of concatValueArray) {
         const searchValueIndex = mergedValueArray.findIndex(ele => {
           return ele.value === nn.value;
