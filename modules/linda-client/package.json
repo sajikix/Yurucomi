@@ -22,9 +22,9 @@
     "@types/bson": "^1.0.10",
     "@types/socket.io": "^1.4.36",
     "@types/socket.io-client": "^1.4.32",
-    "ts-loader": "^4.4.2",
-    "webpack": "^4.15.0",
-    "webpack-cli": "^3.0.8"
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
     "path": "^0.12.7",
